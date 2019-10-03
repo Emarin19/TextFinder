@@ -21,3 +21,7 @@ jlink {
         name = 'TextFinder'
     }
 }
+dependencies{
+    compile group: 'org.apache.poi', name: 'poi', version: '4.1.0'
+    compile group: 'org.apache.poi', name: 'poi-ooxml', version: '4.1.0'
+}
