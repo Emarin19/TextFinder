@@ -1,6 +1,4 @@
 package cr.ac.tec.TextFinder;
-
-import cr.ac.tec.util.Collections.DataNode;
 import cr.ac.tec.util.Collections.TecList;
 
 public class Main {
