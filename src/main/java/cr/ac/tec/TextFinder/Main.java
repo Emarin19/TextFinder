@@ -1,17 +1,31 @@
 package cr.ac.tec.TextFinder;
 
-import cr.ac.tec.util.Collections.BinaryTree;
-import cr.ac.tec.util.Collections.List.TecList;
-import javafx.util.Pair;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
-public class Main {
+import java.io.*;
+
+public class Main extends Application {
+
     public static void main(String[] args) {
-        BinaryTree l = new BinaryTree();
-        l.insert(new Pair<>("Hola",new TecList()));
-        l.insert(new Pair<>("ssa",new TecList()));
-        l.insert(new Pair<>("dddd",new TecList()));
-        l.insert(new Pair<>("zzzz",new TecList()));
-        System.out.println(l.searchNode("zzzz").toString());
+        launch(args);
     }
 
+    /**
+     * Application start method (origin of application)
+     * @param primaryStage stage to be showed
+     * @throws IOException exception in case there's an error reading the fxml base file
+     */
+    @Override
+    public void start(Stage primaryStage) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("ViewModel.fxml"));
+        Parent root = loader.load();
+        primaryStage.setScene(new Scene(root, 1570, 810));
+        primaryStage.show();
+        ViewController controlGUI = loader.getController();
+        controlGUI.configureControl(primaryStage);
+    }
 }
