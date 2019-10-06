@@ -1,0 +1,56 @@
+/*
+-fx-background-color: #2b2b2b;
+-fx-background-color: #3c3f41;
+-fx-text-fill: #afb1b3;
+ */
+#rootPane{
+    -fx-background-color: #2b2b2b;
+}
+#searchPane{
+    -fx-background-color: #3c3f41;
+}
+#fileList, #fileListScrollPane > .viewport{
+    -fx-background-color: #2b2b2b;
+}
+#phraseCheckBox{
+    -fx-text-fill: #afb1b3;
+}
+#searchButton, #searchTextField, #phraseCheckBox .box{
+    -fx-background-color: transparent;
+    -fx-border-color: #afb1b3;
+    -fx-border-width: 2;
+    -fx-text-fill: #afb1b3;
+    -fx-font: 15px Helvetica, sans-serif ;
+}
+#searchButton:pressed{
+    -fx-background-color: #2b2b2b;
+}
+#menu{
+    -fx-background-color: #3c3f41;
+}
+#menu .menu > .label{
+    -fx-text-fill: #fafafa;
+}
+.scroll-pane{
+    -fx-border-width: 0;
+    -fx-border-color: transparent;
+    -fx-background-color: #3c3f41;
+}
+.scroll-pane > .scroll-bar , .tool-bar, .scroll-pane> .corner{
+    -fx-border-color: #fafafa;
+    -fx-border-width: 0.01;
+    -fx-background-color:  #313335;
+
+}
+.scroll-pane > .scroll-bar > .thumb{
+    -fx-background-color: #595b5d;
+
+}
+.ImageView{
+	fx-background-color: transparent;
+}
+#resultContainer{
+    -fx-background-color: #2b2b2b,
+    linear-gradient(from 0.5px 0px to 10.5px 0px, repeat, #3c3f41 5%, transparent 5%),
+    linear-gradient(from 0px 0.5px to 0px 10.5px, repeat, #3c3f41 5%, transparent 5%);
+}
