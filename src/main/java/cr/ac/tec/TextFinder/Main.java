@@ -1,12 +1,17 @@
 package cr.ac.tec.TextFinder;
 
-import cr.ac.tec.util.Collections.TecList;
+import cr.ac.tec.util.Collections.BinaryTree;
+import cr.ac.tec.util.Collections.List.TecList;
+import javafx.util.Pair;
 
 public class Main {
     public static void main(String[] args) {
-        TecList<Integer> lol = new TecList<>();
-        lol.addAll(0,1,2,3,4,5,6);
-        System.out.println(lol.toString());
+        BinaryTree l = new BinaryTree();
+        l.insert(new Pair<>("Hola",new TecList()));
+        l.insert(new Pair<>("ssa",new TecList()));
+        l.insert(new Pair<>("dddd",new TecList()));
+        l.insert(new Pair<>("zzzz",new TecList()));
+        System.out.println(l.searchNode("zzzz").toString());
     }
 
 }

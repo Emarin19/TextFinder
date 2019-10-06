@@ -1,4 +1,4 @@
-package cr.ac.tec.util.Collections;
+package cr.ac.tec.util.Collections.List;
 
 import java.util.Iterator;
 

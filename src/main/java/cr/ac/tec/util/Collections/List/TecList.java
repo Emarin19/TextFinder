@@ -1,4 +1,4 @@
-package cr.ac.tec.util.Collections;
+package cr.ac.tec.util.Collections.List;
 
 import java.io.Serializable;
 import java.util.Iterator;
@@ -20,7 +20,7 @@ public class TecList<T> implements Iterable<T>, Serializable {
     /**
      * Default constructor for a TecList which is an implementation of doubly Linked List
      * The way data is stored is using a DataNode object
-     * @see cr.ac.tec.util.Collections.DataNode
+     * @see DataNode
      */
     public TecList(){
         first = last = null;
