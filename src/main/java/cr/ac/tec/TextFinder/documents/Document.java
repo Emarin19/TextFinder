@@ -1,4 +1,4 @@
-package cr.ac.tec.TextFinder;
+package cr.ac.tec.TextFinder.documents;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
