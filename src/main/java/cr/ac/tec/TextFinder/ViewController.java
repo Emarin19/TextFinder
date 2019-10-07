@@ -42,6 +42,7 @@ public class ViewController {
     public void sortByName(){
         //doSomething
     }
+    public void refreshDocumentResults(){}
 
 
 }
