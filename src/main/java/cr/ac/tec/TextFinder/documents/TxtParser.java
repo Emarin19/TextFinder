@@ -8,6 +8,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.FileReader;
 import javafx.util.Pair;
+import org.apache.poi.util.StringUtil;
+
+import java.text.Normalizer;
 import java.util.StringTokenizer;
 
 /**
@@ -35,14 +38,16 @@ public class TxtParser implements TextFileParser{
         try {
             FileReader fileReader = new FileReader(file);
             BufferedReader buffer = new BufferedReader(fileReader);
-            String delimiters = ".,;: ";
+            String delimiters = ".,;:(){}[]/´ ";
             int numLine = 1;
             int position = 0;
             String line;
             while((line = buffer.readLine()) != null){
                 StringTokenizer stk = new StringTokenizer(line, delimiters);
                 while (stk.hasMoreTokens()){
-                    String word = stk.nextToken();
+                    String word = Normalizer
+                            .normalize(stk.nextToken(), Normalizer.Form.NFD)
+                            .replaceAll("[^\\p{ASCII}]", "");
                     TecList list = new TecList();
                     list.addAll(numLine,position);
                     value = new Pair<String, TecList>(word,list);

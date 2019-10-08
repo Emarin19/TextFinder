@@ -7,6 +7,7 @@ import org.apache.poi.openxml4j.opc.OPCPackage;
 import cr.ac.tec.util.Collections.List.TecList;
 import cr.ac.tec.util.Collections.BinaryTree;
 import java.io.FileNotFoundException;
+import java.text.Normalizer;
 import java.util.StringTokenizer;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -40,13 +41,15 @@ public class DocParser implements TextFileParser {
             FileInputStream fis = new FileInputStream(file);
             XWPFDocument docx = new XWPFDocument(OPCPackage.open(fis));
             List<XWPFParagraph> paragraphList = docx.getParagraphs();
-            String delimiters = ".,;: ";
+            String delimiters = ".,;:(){}[]/´ ";
             int numparagraph = 1;
             int position = 0;
             for(XWPFParagraph paragraph : paragraphList){
                 StringTokenizer stk = new StringTokenizer(paragraph.getParagraphText(), delimiters);
                 while(stk.hasMoreTokens()){
-                    String word = stk.nextToken();
+                    String word = Normalizer
+                            .normalize(stk.nextToken(), Normalizer.Form.NFD)
+                            .replaceAll("[^\\p{ASCII}]", "");
                     TecList list = new TecList();
                     list.addAll(numparagraph,position);
                     value = new Pair<String, TecList>(word,list);
