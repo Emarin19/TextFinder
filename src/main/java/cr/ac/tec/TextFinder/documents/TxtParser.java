@@ -1,5 +1,68 @@
 package cr.ac.tec.TextFinder.documents;
 
-public class TxtParser implements TextFileParser{
+import cr.ac.tec.util.Collections.BinaryTree;
+import cr.ac.tec.util.Collections.List.TecList;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.FileReader;
+import javafx.util.Pair;
+import java.util.StringTokenizer;
 
+/**
+ * Technological Institute of Costa Rica
+ * Computer Engineering
+ * Course: de Algoritmos y estructuras de datos I
+ * Project II: TextFinder
+ * JDK 11
+ * Description: Create a binary tree from all the words in the document
+ * @author Emanuel Marín Gutiérrez
+ * @since October 2019
+ */
+public class TxtParser implements TextFileParser{
+    private final File file;
+    private final BinaryTree tree;
+    private Pair<String,TecList> value;
+
+    public TxtParser(File file) {
+        this.file = file;
+        this.tree = new BinaryTree();
+        setTree();
+    }
+
+    private void setTree() {
+        try {
+            FileReader fileReader = new FileReader(file);
+            BufferedReader buffer = new BufferedReader(fileReader);
+            String delimiters = ".,;: ";
+            int numLine = 1;
+            int position = 0;
+            String line;
+            while((line = buffer.readLine()) != null){
+                StringTokenizer stk = new StringTokenizer(line, delimiters);
+                while (stk.hasMoreTokens()){
+                    String word = stk.nextToken();
+                    TecList list = new TecList();
+                    list.addAll(numLine,position);
+                    value = new Pair<String, TecList>(word,list);
+                    tree.insert(value);
+                    position++;
+                }
+                position = 0;
+                numLine++;
+            }
+            fileReader.close();
+            buffer.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found");
+        } catch (IOException e){
+            System.out.println("Read error");
+        }
+    }
+
+    @Override
+    public BinaryTree getTree() {
+        return tree;
+    }
 }

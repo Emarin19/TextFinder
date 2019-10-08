@@ -1,36 +1,39 @@
 package cr.ac.tec.TextFinder.documents;
 
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.openxml4j.opc.OPCPackage;
-import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import java.awt.*;
-import java.io.*;
+import cr.ac.tec.util.Collections.BinaryTree;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-
+/**
+ * Technological Institute of Costa Rica
+ * Computer Engineering
+ * Course: de Algoritmos y estructuras de datos I
+ * Project II: TextFinder
+ * JDK 11
+ * Description: It contains all the information of a particular file and a binary tree of itself
+ * @author Emanuel Marín Gutiérrez
+ * @since October 2019
+ */
 public class Document {
     private File file;
-    private int date;
-
+    private BinaryTree tree;
     public Document(File file){
         this.file = file;
+        setTree();
     }
-
     public String getName(){
         return file.getName();
     }
-
     public int getSize(){
         return (int) (file.length()/1024);
     }
-
     public int getDate(){
-        date = 0;
+        int date = 0;
         BasicFileAttributes attributes;
         try{
             attributes = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
@@ -44,28 +47,19 @@ public class Document {
         }
         return date;
     }
-
-    public void openFile(){
-        try{
-            Desktop.getDesktop().open(file);
-        }catch (IOException ex){
-            System.out.println("File not found");
-        }
+    public BinaryTree getTree(){
+        return tree;
     }
-
-    public void readFile(){
-        try {
-            FileInputStream fis = new FileInputStream(file);
-            XWPFDocument docx = new XWPFDocument(OPCPackage.open(fis));
-            XWPFWordExtractor extractor = new XWPFWordExtractor(docx);
-            System.out.println(extractor.getText());
-        } catch (FileNotFoundException ex) {
-            ex.printStackTrace();
-        } catch (InvalidFormatException ex){
-            System.out.println("Formato inválido");
-        } catch (IOException ex){
-            System.out.println("Can´t be readed");
+    private void setTree() {
+        if(file.getName().endsWith(".txt")){
+            tree = ParserFactory.getParser(DocumentType.TXT, file).getTree();
         }
+        else if(file.getName().endsWith(".docx")){
+            tree = ParserFactory.getParser(DocumentType.DOC, file).getTree();
+        }
+        else if(file.getName().endsWith(".pdf")){
+            tree = ParserFactory.getParser(DocumentType.PDF, file).getTree();
+        }
+        else{}
     }
-
 }
