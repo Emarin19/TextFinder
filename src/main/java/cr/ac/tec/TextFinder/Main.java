@@ -5,8 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
-import java.io.*;
+import java.io.IOException;
 
 public class Main extends Application {
 
@@ -23,7 +22,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("ViewModel.fxml"));
         Parent root = loader.load();
-        primaryStage.setScene(new Scene(root, 1570, 810));
+        primaryStage.setScene(new Scene(root, 800, 600));
         primaryStage.show();
         ViewController controlGUI = loader.getController();
         controlGUI.configureControl(primaryStage);
