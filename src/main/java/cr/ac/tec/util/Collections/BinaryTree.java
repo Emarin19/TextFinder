@@ -32,7 +32,9 @@ public class BinaryTree {
                         current = current.left;
                     }
                 }else {
-                    //mismo valor
+                    TecList list = value.getValue();
+                    Pair pair = (Pair) list.get(0);
+                    current.data.getValue().add(pair);
                     break;
                 }
             }

@@ -3,6 +3,7 @@ package cr.ac.tec.TextFinder.documents;
 import cr.ac.tec.util.Collections.BinaryTree;
 import java.io.File;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
@@ -61,5 +62,18 @@ public class Document {
             tree = ParserFactory.getParser(DocumentType.PDF, file).getTree();
         }
         else{}
+    }
+    public String getContext(String word_phrase){
+        String result = null;
+        if(file.getName().endsWith(".txt")){
+            result = TxtParser.getContext(tree, file, word_phrase);
+        }
+        else if(file.getName().endsWith(".docx")){
+            result = DocParser.getContext(file, word_phrase);
+        }
+        else if(file.getName().endsWith(".pdf")){
+            result = PdfParser.getContext(file, word_phrase);
+        }
+        return result;
     }
 }
