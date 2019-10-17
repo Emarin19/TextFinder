@@ -7,4 +7,5 @@ module TextFinder.main {
     requires java.desktop;
     opens  cr.ac.tec.TextFinder to javafx.fxml;
     exports cr.ac.tec.TextFinder;
+    exports cr.ac.tec.TextFinder.documents;
 }

@@ -1,6 +1,10 @@
 package cr.ac.tec.TextFinder.documents;
 
 import cr.ac.tec.util.Collections.BinaryTree;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.layout.AnchorPane;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -16,15 +20,19 @@ import java.util.Date;
  * Project II: TextFinder
  * JDK 11
  * Description: It contains all the information of a particular file and a binary tree of itself
- * @author Emanuel Marín Gutiérrez
+ * @author Emanuel Marín Gutiérrez, José Morales Vargas
  * @since October 2019
  */
-public class Document {
+public class Document extends AnchorPane {
     private File file;
     private BinaryTree tree;
+    private DocumentType type;
     public Document(File file){
         this.file = file;
-        setTree();
+        //setTree(); ------------ comentado en trabajo
+        FXMLLoader fxmlLoader = new FXMLLoader(
+                getClass().getResource("GateNode.fxml")
+        );
     }
     public String getName(){
         return file.getName();
@@ -50,16 +58,38 @@ public class Document {
     public BinaryTree getTree(){
         return tree;
     }
-    private void setTree() {
-        if(file.getName().endsWith(".txt")){
-            tree = ParserFactory.getParser(DocumentType.TXT, file).getTree();
+    public void setTree(BinaryTree binaryTree) {
+        this.tree = binaryTree;
+        /*if(file.getName().endsWith(".txt")){
+            tree = ParserFacade.parse(DocumentType.TXT, file).getTree();
         }
         else if(file.getName().endsWith(".docx")){
-            tree = ParserFactory.getParser(DocumentType.DOC, file).getTree();
+            tree = ParserFacade.parse(DocumentType.DOC, file).getTree();
         }
         else if(file.getName().endsWith(".pdf")){
-            tree = ParserFactory.getParser(DocumentType.PDF, file).getTree();
+            tree = ParserFacade.parse(DocumentType.PDF, file).getTree();
         }
-        else{}
+        else{}*/
+
+    }
+
+    public File getFile() {
+        return file;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
+    }
+
+    public DocumentType getType() {
+        return type;
+    }
+
+    public void setType(DocumentType type) {
+        this.type = type;
+    }
+
+    @FXML
+    public void initialize(){
     }
 }

@@ -26,19 +26,26 @@ import java.io.File;
  * @since October 2019
  */
 public class DocParser implements TextFileParser {
-    private final File file;
-    private final BinaryTree tree;
-    private Pair<String, TecList> value;
-
-    public DocParser(File file) {
-        this.file = file;
-        this.tree = new BinaryTree();
-        setTree();
+    private static DocParser instance;
+    private DocParser() {
+    }
+    public static DocParser getInstance(){
+        if(instance == null)
+            instance = new DocParser();
+        return instance;
+    }
+    public Document parseDocument(File file) {
+        Document parsedDoc = new Document(file);
+        parsedDoc.setType(DocumentType.DOC);
+        generateTree(parsedDoc);
+        return parsedDoc;
     }
 
-    private void setTree(){
+    private void generateTree(Document fileToParse){
         try{
-            FileInputStream fis = new FileInputStream(file);
+            Pair<String, TecList> value;
+            BinaryTree tree = new BinaryTree();
+            FileInputStream fis = new FileInputStream(fileToParse.getFile());
             XWPFDocument docx = new XWPFDocument(OPCPackage.open(fis));
             List<XWPFParagraph> paragraphList = docx.getParagraphs();
             String delimiters = ".,;:(){}[]/´ ";
@@ -61,6 +68,7 @@ public class DocParser implements TextFileParser {
             }
             fis.close();
             docx.close();
+            fileToParse.setTree(tree);
         } catch (FileNotFoundException e) {
             System.out.println("File not found");
         } catch (IOException e){
@@ -70,8 +78,4 @@ public class DocParser implements TextFileParser {
         }
     }
 
-    @Override
-    public BinaryTree getTree() {
-        return tree;
-    }
 }

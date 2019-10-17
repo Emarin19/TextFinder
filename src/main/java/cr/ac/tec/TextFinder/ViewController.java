@@ -1,11 +1,16 @@
 package cr.ac.tec.TextFinder;
 
+import cr.ac.tec.TextFinder.documents.Document;
+import cr.ac.tec.TextFinder.documents.DocumentType;
+import cr.ac.tec.TextFinder.documents.ParserFacade;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
+import java.io.File;
 
 public class ViewController {
     public VBox fileList;
@@ -32,7 +37,21 @@ public class ViewController {
         }
     }
     public void refreshFileList(){}
-    public void addFileToList(){}
+    public void addFileToList(File file){
+        Document doc = null;
+        if(file.getName().endsWith(".txt")){
+            doc = ParserFacade.parse(DocumentType.TXT, file);
+        }
+        else if(file.getName().endsWith(".docx")){
+            doc = ParserFacade.parse(DocumentType.DOC, file);
+        }
+        else if(file.getName().endsWith(".pdf")){
+            doc = ParserFacade.parse(DocumentType.PDF, file);
+        }else{
+            return;
+        }
+        FileListManager.getInstance().addDocument(doc);
+    }
     public void sortByDate(){
         //doSomething
     }
@@ -43,6 +62,4 @@ public class ViewController {
         //doSomething
     }
     public void refreshDocumentResults(){}
-
-
 }
