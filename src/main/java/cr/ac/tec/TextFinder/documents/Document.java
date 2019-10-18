@@ -1,9 +1,17 @@
 package cr.ac.tec.TextFinder.documents;
 
+import cr.ac.tec.TextFinder.FileListManager;
 import cr.ac.tec.util.Collections.BinaryTree;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,12 +35,38 @@ public class Document extends AnchorPane {
     private File file;
     private BinaryTree tree;
     private DocumentType type;
+    public Label lblTamano;
+    public Label lblFecha;
+    public Label lblNombre;
+    public ImageView TypeIcon;
+    public Button closeBtn;
+
     public Document(File file){
         this.file = file;
-        //setTree(); ------------ comentado en trabajo
         FXMLLoader fxmlLoader = new FXMLLoader(
-                getClass().getResource("GateNode.fxml")
+                getClass().getResource("Document.fxml")
         );
+        fxmlLoader.setRoot(this);
+        fxmlLoader.setController(this);
+        try{
+            fxmlLoader.load();
+        }catch(IOException e) {
+            throw new RuntimeException(e);
+        }
+        builGraphicElements();
+
+    }
+    private void builGraphicElements(){
+        setStyle("-fx-background-color: white" +
+                "" +
+                "" +
+                "");
+        lblNombre.setText("Nombre: " +file.getName());
+        Long size = file.length()/1024;
+        lblTamano.setText("Espacio: " + size.toString() + "KB");
+        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
+        lblFecha.setText(sdf.format(file.lastModified()));
+
     }
     public String getName(){
         return file.getName();
@@ -60,36 +94,31 @@ public class Document extends AnchorPane {
     }
     public void setTree(BinaryTree binaryTree) {
         this.tree = binaryTree;
-        /*if(file.getName().endsWith(".txt")){
-            tree = ParserFacade.parse(DocumentType.TXT, file).getTree();
-        }
-        else if(file.getName().endsWith(".docx")){
-            tree = ParserFacade.parse(DocumentType.DOC, file).getTree();
-        }
-        else if(file.getName().endsWith(".pdf")){
-            tree = ParserFacade.parse(DocumentType.PDF, file).getTree();
-        }
-        else{}*/
 
     }
-
     public File getFile() {
         return file;
     }
-
     public void setFile(File file) {
         this.file = file;
     }
-
     public DocumentType getType() {
         return type;
     }
-
     public void setType(DocumentType type) {
+        System.out.println(type.pathToImage);
+        TypeIcon.setImage(new Image(this.getClass().getResourceAsStream(type.pathToImage)));
         this.type = type;
     }
 
     @FXML
     public void initialize(){
+        closeBtn.setOnAction(onA -> {
+            FileListManager.getInstance().deleteDocument(this);
+            //se autoremueve
+            VBox parent = (VBox) this.getParent();
+            parent.getChildren().remove(this);
+        });
+
     }
 }

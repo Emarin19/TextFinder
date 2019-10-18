@@ -5,17 +5,21 @@ import cr.ac.tec.util.Collections.List.TecList;
 
 public class FileListManager {
     static FileListManager instance;
+    ViewController viewController;
     private TecList<Document> documentsList = null;
 
     private FileListManager(){
         documentsList = new TecList<>();
     }
     public static FileListManager getInstance() {
-        if(instance==null) instance = new FileListManager();
+        if(instance==null) {
+            instance = new FileListManager();
+        }
         return instance;
     }
     public synchronized void addDocument(Document newDocument){
         documentsList.add(newDocument);
+        System.out.println(newDocument.getTree().toString());
     }
     public synchronized void deleteDocument(Document toDelete){
         documentsList.removeValue(toDelete);

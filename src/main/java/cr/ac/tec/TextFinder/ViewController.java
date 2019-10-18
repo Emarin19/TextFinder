@@ -3,6 +3,7 @@ package cr.ac.tec.TextFinder;
 import cr.ac.tec.TextFinder.documents.Document;
 import cr.ac.tec.TextFinder.documents.DocumentType;
 import cr.ac.tec.TextFinder.documents.ParserFacade;
+import cr.ac.tec.util.Collections.List.TecList;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -37,31 +38,24 @@ public class ViewController {
 
         }
     }
-    public void refreshFileList(){}
+    public void refreshFileList(){
+    }
     public void addFileToList(){
         File file;
+
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().removeAll();
-        FileChooser.ExtensionFilter docx = new FileChooser.ExtensionFilter("Word", "*.docx");
-        FileChooser.ExtensionFilter pdf = new FileChooser.ExtensionFilter("pdf", "*.pdf");
-        FileChooser.ExtensionFilter txt = new FileChooser.ExtensionFilter("txt", "*.txt");
-        fileChooser.getExtensionFilters().addAll(docx,pdf,txt);
-        file= fileChooser.showOpenDialog(currentStage);
+        FileChooser.ExtensionFilter filters = new FileChooser.ExtensionFilter("Archivos permitidos", "*.docx","*.pdf" ,"*.txt");
+        fileChooser.getExtensionFilters().addAll(filters);
+        file = fileChooser.showOpenDialog(currentStage);
+
         if(file==null)
             return;
-        Document doc = null;
-        if(file.getName().endsWith(".txt")){
-            doc = ParserFacade.parse(DocumentType.TXT, file);
-        }
-        else if(file.getName().endsWith(".docx")){
-            doc = ParserFacade.parse(DocumentType.DOC, file);
-        }
-        else if(file.getName().endsWith(".pdf")){
-            doc = ParserFacade.parse(DocumentType.PDF, file);
-        }else{
+        Document doc = ParserFacade.parse(file);
+        if (doc==null)
             return;
-        }
         FileListManager.getInstance().addDocument(doc);
+        fileList.getChildren().add(doc);
     }
     public void sortByDate(){
         //doSomething

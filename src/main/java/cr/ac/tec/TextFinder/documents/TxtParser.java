@@ -34,7 +34,8 @@ public class TxtParser implements TextFileParser{
     }
     public Document parseDocument(File file) {
         Document parsedDoc = new Document(file);
-        parsedDoc.setType(DocumentType.DOC);
+        System.out.println("AYYYYYYYYYY LMAO");
+        parsedDoc.setType(DocumentType.TXT);
         generateTree(parsedDoc);
         return parsedDoc;
     }
