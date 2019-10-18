@@ -18,8 +18,8 @@ public class FileListManager {
         return instance;
     }
     public synchronized void addDocument(Document newDocument){
+        System.out.print(newDocument.getTree().toString());
         documentsList.add(newDocument);
-        System.out.println(newDocument.getTree().toString());
     }
     public synchronized void deleteDocument(Document toDelete){
         documentsList.removeValue(toDelete);

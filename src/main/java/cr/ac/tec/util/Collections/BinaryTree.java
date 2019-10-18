@@ -93,7 +93,7 @@ public class BinaryTree {
     }
     @Override
     public String toString() {
-        return preOrder(root, " holi");
-        //return super.toString();
+        //return preOrder(root, " holi");
+        return super.toString();
     }
 }

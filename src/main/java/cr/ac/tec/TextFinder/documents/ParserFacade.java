@@ -8,7 +8,8 @@ public class ParserFacade {
             return TxtParser.getInstance().parseDocument(file);
         }
         else if(file.getName().endsWith(".docx") || file.getName().endsWith(".DOCX")){
-            return DocParser.getInstance().parseDocument(file);
+            Document result = DocParser.getInstance().parseDocument(file);
+            return result;
         }
         else if(file.getName().endsWith(".pdf") || file.getName().endsWith(".PDF")){
             return PdfParser.getInstance().parseDocument(file);

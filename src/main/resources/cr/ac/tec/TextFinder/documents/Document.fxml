@@ -5,14 +5,12 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
-<fx:root type="javafx.scene.layout.AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-         prefHeight="98.0" prefWidth="270.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="61.0" prefWidth="270.0" styleClass="root" type="javafx.scene.layout.AnchorPane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <ImageView fx:id="TypeIcon" fitHeight="48.0" fitWidth="54.0" layoutX="14.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true" />
-      <Label fx:id="lblTamano" layoutX="87.0" layoutY="11.0" prefHeight="22.0" prefWidth="148.0" text="Tamaño" />
-      <Label fx:id="lblFecha" layoutX="87.0" layoutY="36.0" prefHeight="22.0" prefWidth="148.0" text="Fecha" />
-      <Label fx:id="lblNombre" layoutX="20.0" layoutY="62.0" prefHeight="22.0" prefWidth="243.0" text="Nombre:" />
-      <Button fx:id="closeBtn" layoutX="238.0" layoutY="3.0" mnemonicParsing="false" prefHeight="22.0" prefWidth="28.0" text="X" />
+      <ImageView fx:id="TypeIcon" fitHeight="25.0" fitWidth="28.0" layoutX="9.0" layoutY="28.0" pickOnBounds="true" preserveRatio="true" />
+      <Label fx:id="lblTamano" layoutX="44.0" layoutY="36.0" prefHeight="22.0" prefWidth="148.0" text="Tamaño" />
+      <Label fx:id="lblFecha" layoutX="44.0" layoutY="20.0" prefHeight="22.0" prefWidth="148.0" text="Fecha" />
+      <Label fx:id="lblNombre" layoutX="11.0" layoutY="3.0" prefHeight="22.0" prefWidth="189.0" text="Nombre:" />
+      <Button fx:id="closeBtn" layoutX="238.0" layoutY="8.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="15.0" text="x" />
    </children>
 </fx:root>

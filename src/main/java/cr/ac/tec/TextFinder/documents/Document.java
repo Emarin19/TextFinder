@@ -13,8 +13,10 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
+import javax.swing.text.html.StyleSheet;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
@@ -57,14 +59,13 @@ public class Document extends AnchorPane {
 
     }
     private void builGraphicElements(){
-        setStyle("-fx-background-color: white" +
-                "" +
-                "" +
-                "");
-        lblNombre.setText("Nombre: " +file.getName());
+        getStylesheets().add(getClass().getResource("Document.css").toExternalForm());
+        TypeIcon.setPreserveRatio(true);
+        TypeIcon.setSmooth(true);
+        lblNombre.setText(file.getName());
         Long size = file.length()/1024;
-        lblTamano.setText("Espacio: " + size.toString() + "KB");
-        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
+        lblTamano.setText(size.toString() + "KB");
+        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
         lblFecha.setText(sdf.format(file.lastModified()));
 
     }
