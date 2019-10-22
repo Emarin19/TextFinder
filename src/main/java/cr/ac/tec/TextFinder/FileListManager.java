@@ -101,7 +101,10 @@ public class FileListManager {
     }
 
     //Quick sort
-    public void sortListByName(TecList<Document> list, int start, int end){
+    public void sortListByName(TecList<Document> list){
+        sortListByName(list, 0, list.size()-1);
+    }
+    private void sortListByName(TecList<Document> list, int start, int end){
         int i = start;
         int j = end;
         if(end-start >=1){

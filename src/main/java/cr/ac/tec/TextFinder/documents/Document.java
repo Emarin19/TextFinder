@@ -3,7 +3,6 @@ package cr.ac.tec.TextFinder.documents;
 import cr.ac.tec.util.Collections.BinaryTree;
 import java.io.File;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
