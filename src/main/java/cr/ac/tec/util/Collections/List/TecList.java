@@ -71,7 +71,6 @@ public class TecList<T> implements Iterable<T>, Serializable {
                 first = last = new DataNode<>(value);
             }
         }else if(index == size()-1){
-            System.out.println(2);
             DataNode<T> newNode = new DataNode<>(value);
             last.prev.next = newNode;
             newNode.prev = last.prev;
@@ -92,6 +91,30 @@ public class TecList<T> implements Iterable<T>, Serializable {
         else if(index==size()){
 
             add(value);
+        }
+        return;
+    }
+
+    public void reinsert(T value, int index){
+        if(index == 0){
+            if(first!=null){
+                first.data = value;
+            }
+            else{
+                first = last = new DataNode<>(value);
+            }
+        }
+        else if(index == size()-1){
+            last.data = value;
+        }
+        else {
+            int counter =0;
+            DataNode current = first;
+            while (counter!=index){
+                current = current.next;
+                counter++;
+            }
+            current.data = value;
         }
         return;
     }
