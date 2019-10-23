@@ -5,5 +5,6 @@ import cr.ac.tec.util.Collections.BinaryTree;
 import java.io.File;
 
 public interface TextFileParser {
-    BinaryTree getTree();
+    Document parseDocument(File file);
+
 }

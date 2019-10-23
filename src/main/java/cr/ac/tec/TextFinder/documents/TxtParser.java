@@ -22,19 +22,26 @@ import java.util.StringTokenizer;
  * @since October 2019
  */
 public class TxtParser implements TextFileParser{
-    private final File file;
-    private final BinaryTree tree;
-    private Pair<String,TecList> value;
-
-    public TxtParser(File file) {
-        this.file = file;
-        this.tree = new BinaryTree();
-        setTree();
+    private static TxtParser instance;
+    public TxtParser() {
+    }
+    public static TxtParser getInstance(){
+        if(instance == null)
+            instance = new TxtParser();
+        return instance;
+    }
+    public Document parseDocument(File file) {
+        Document parsedDoc = new Document(file);
+        parsedDoc.setType(DocumentType.TXT);
+        generateTree(parsedDoc);
+        return parsedDoc;
     }
 
-    private void setTree() {
+    private void generateTree(Document fileToParse) {
         try {
-            FileReader fileReader = new FileReader(file);
+            Pair<String, TecList> value;
+            BinaryTree tree = new BinaryTree();
+            FileReader fileReader = new FileReader(fileToParse.getFile());
             BufferedReader buffer = new BufferedReader(fileReader);
             String delimiters = ".,;:(){}[]/´ ";
             int numLine = 1;
@@ -57,16 +64,12 @@ public class TxtParser implements TextFileParser{
             }
             fileReader.close();
             buffer.close();
+            fileToParse.setTree(tree);
         } catch (FileNotFoundException e) {
             System.out.println("File not found");
         } catch (IOException e){
             System.out.println("Read error");
         }
-    }
-
-    @Override
-    public BinaryTree getTree() {
-        return tree;
     }
 
     public static String getContext(BinaryTree tree, File file, String word_phrase){

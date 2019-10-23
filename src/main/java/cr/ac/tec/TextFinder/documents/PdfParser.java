@@ -7,6 +7,8 @@ import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.pdfbox.text.PDFTextStripperByArea;
 
 import javafx.util.Pair;
+
+import javax.print.Doc;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -24,18 +26,28 @@ import java.util.StringTokenizer;
  * @since October 2019
  */
 public class PdfParser implements TextFileParser{
-    private  File file;
-    private final BinaryTree tree;
-    private Pair<String, TecList> value;
+    private static PdfParser instance;
 
-    public PdfParser(File file) {
-        this.file = file;
-        this.tree = new BinaryTree();
-        setTree();
+    private PdfParser() {
+    }
+    public static PdfParser getInstance() {
+        if(instance == null)
+            instance = new PdfParser();
+        return instance;
+    }
+    @Override
+    public Document parseDocument(File file) {
+        Document parsedDoc = new Document(file);
+        parsedDoc.setType(DocumentType.PDF);
+        generateTree(parsedDoc);
+        return parsedDoc;
     }
 
-    private void setTree() {
-        try (PDDocument document = PDDocument.load(file)){
+    ////////////////////////////
+    private void generateTree(Document fileToParse) {
+        try (PDDocument document = PDDocument.load(fileToParse.getFile())){
+            Pair<String, TecList> value;
+            BinaryTree tree = new BinaryTree();
             if (!document.isEncrypted()) {
                 PDFTextStripperByArea pdfDocument = new PDFTextStripperByArea();
                 pdfDocument.setSortByPosition(true);
@@ -62,6 +74,7 @@ public class PdfParser implements TextFileParser{
                     position = 0;
                     numLine++;
                 }
+                fileToParse.setTree(tree);
             }
         } catch (FileNotFoundException e) {
             System.out.println("File not found");
@@ -69,12 +82,6 @@ public class PdfParser implements TextFileParser{
             System.out.println("Read error");
         }
     }
-
-    @Override
-    public BinaryTree getTree() {
-        return tree;
-    }
-
     public static String getContext(BinaryTree tree, File file, String word_phrase){
         TecList list = tree.searchNode(word_phrase).getValue();
         String result = null;

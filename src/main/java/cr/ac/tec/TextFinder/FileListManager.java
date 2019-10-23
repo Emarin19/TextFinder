@@ -7,16 +7,20 @@ import java.util.Arrays;
 
 public class FileListManager {
     static FileListManager instance;
+    ViewController viewController;
     private TecList<Document> documentsList = null;
 
     private FileListManager(){
         documentsList = new TecList<>();
     }
     public static FileListManager getInstance() {
-        if(instance==null) instance = new FileListManager();
+        if(instance==null) {
+            instance = new FileListManager();
+        }
         return instance;
     }
     public synchronized void addDocument(Document newDocument){
+        System.out.print(newDocument.getTree().toString());
         documentsList.add(newDocument);
     }
     public synchronized void deleteDocument(Document toDelete){

@@ -84,8 +84,18 @@ public class BinaryTree {
         return result;
     }
 
+    private String preOrder(TreeNode node, String message) {
+        if (node != null) {
+            System.out.println("uwu");
+            message += node.data.toString() + " ";
+            message += preOrder(node.left, message);
+            message += preOrder(node.right, message);
+        }
+        return message;
+    }
     @Override
     public String toString() {
+        //return preOrder(root, " holi");
         return super.toString();
     }
 }
