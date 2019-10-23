@@ -8,7 +8,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.FileReader;
 import javafx.util.Pair;
-
 import java.text.Normalizer;
 import java.util.StringTokenizer;
 

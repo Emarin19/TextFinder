@@ -75,7 +75,7 @@ public class DocParser implements TextFileParser {
         return tree;
     }
 
-    public static String getContext(File file, String word_phrase){
+    public static String getContext(BinaryTree tree, File file, String word_phrase){
         return "Hola";
     }
 }

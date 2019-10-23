@@ -75,7 +75,30 @@ public class PdfParser implements TextFileParser{
         return tree;
     }
 
-    public static String getContext(File file, String word_phrase){
+    public static String getContext(BinaryTree tree, File file, String word_phrase){
+        TecList list = tree.searchNode(word_phrase).getValue();
+        String result = null;
+        Pair value;
+        int line;
+        try{
+            PDDocument document = PDDocument.load(file);
+            if (!document.isEncrypted()) {
+                PDFTextStripperByArea pdfDocument = new PDFTextStripperByArea();
+                pdfDocument.setSortByPosition(true);
+                PDFTextStripper pdfFile = new PDFTextStripper();
+                String pdfText = pdfFile.getText(document);
+                String lines[] = pdfText.split("\\r?\\n");
+                int numLines = 1;
+                String sline;
+                for(int i=0; i<list.size(); i++){
+                    value = (Pair) list.get(i);
+                    line = (int) value.getKey();
+
+                }
+            }
+        }catch (Exception ex){
+
+        }
         return "Hola";
     }
 }

@@ -68,10 +68,10 @@ public class Document {
             result = TxtParser.getContext(tree, file, word_phrase);
         }
         else if(file.getName().endsWith(".docx")){
-            result = DocParser.getContext(file, word_phrase);
+            result = DocParser.getContext(tree, file, word_phrase);
         }
         else if(file.getName().endsWith(".pdf")){
-            result = PdfParser.getContext(file, word_phrase);
+            result = PdfParser.getContext(tree, file, word_phrase);
         }
         return result;
     }
