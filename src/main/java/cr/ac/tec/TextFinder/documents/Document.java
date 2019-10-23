@@ -122,15 +122,16 @@ public class Document extends AnchorPane {
         });
 
     }
+
     public String getContext(String word_phrase){
         String result = null;
-        if(file.getName().endsWith(".txt")){
+        if(type == DocumentType.TXT){
             result = TxtParser.getContext(tree, file, word_phrase);
         }
-        else if(file.getName().endsWith(".docx")){
+        else if(type == DocumentType.DOC){
             result = DocParser.getContext(tree, file, word_phrase);
         }
-        else if(file.getName().endsWith(".pdf")){
+        else if(type == DocumentType.PDF){
             result = PdfParser.getContext(tree, file, word_phrase);
         }
         return result;

@@ -66,7 +66,7 @@ public class PdfParser implements TextFileParser{
                                 .normalize(stk.nextToken(), Normalizer.Form.NFD)
                                 .replaceAll("[^\\p{ASCII}]", "");
                         TecList list = new TecList();
-                        list.addAll(numLine,position);
+                        list.add(new Pair<Integer,Integer>(numLine,position));
                         value = new Pair<String, TecList>(word,list);
                         tree.insert(value);
                         position++;

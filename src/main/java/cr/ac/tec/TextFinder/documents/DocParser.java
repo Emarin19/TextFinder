@@ -58,7 +58,7 @@ public class DocParser implements TextFileParser {
                             .normalize(stk.nextToken(), Normalizer.Form.NFD)
                             .replaceAll("[^\\p{ASCII}]", "");
                     TecList list = new TecList();
-                    list.addAll(numparagraph,position);
+                    list.add(new Pair<Integer,Integer>(numparagraph,position));
                     value = new Pair<String, TecList>(word,list);
                     tree.insert(value);
                     position++;
@@ -78,7 +78,7 @@ public class DocParser implements TextFileParser {
         }
     }
 
-}
     public static String getContext(BinaryTree tree, File file, String word_phrase){
         return "Hola";
     }
+}
