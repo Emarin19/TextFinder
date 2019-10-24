@@ -90,6 +90,20 @@ public class Document extends AnchorPane {
         }
         return date;
     }
+    public String getDateString(){
+        String date = "";
+        BasicFileAttributes attributes;
+        try{
+            attributes = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
+            FileTime time = attributes.creationTime();
+            String pattern = "dd-MM-yyyy";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+            date = simpleDateFormat.format(new Date(time.toMillis()));
+        }catch(IOException | NumberFormatException ex){
+            System.out.println("Date no found");
+        }
+        return date;
+    }
     public BinaryTree getTree(){
         return tree;
     }
@@ -107,7 +121,6 @@ public class Document extends AnchorPane {
         return type;
     }
     public void setType(DocumentType type) {
-        System.out.println(type.pathToImage);
         TypeIcon.setImage(new Image(this.getClass().getResourceAsStream(type.pathToImage)));
         this.type = type;
     }

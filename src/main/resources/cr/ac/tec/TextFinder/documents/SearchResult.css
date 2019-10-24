@@ -1,0 +1,17 @@
+#root{
+    -fx-background-color: #3c3f41;
+    -fx-background-radius: 10;
+}
+#root > *{
+    -fx-font: 14px Helvetica, sans-serif ;
+}
+.label{
+    -fx-text-fill: #fafafa;
+}
+.button{
+    -fx-background-color: #3c3f41;
+    -fx-border-color: #535353;
+    -fx-text-fill: #fafafa;
+    -fx-border-width: 3;
+    -fx-border-radius: 10;
+}

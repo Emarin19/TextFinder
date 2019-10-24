@@ -24,7 +24,13 @@
    <center>
       <ScrollPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
         <content>
-          <AnchorPane fx:id="resultContainer" minHeight="-Infinity" minWidth="-Infinity" prefHeight="6000.0" prefWidth="2000.0" />
+          <AnchorPane>
+               <children>
+                  <VBox fx:id="resultContainer" prefHeight="200.0" prefWidth="100.0" spacing="10.0">
+                     <padding>
+                        <Insets left="20.0" top="10.0" />
+                     </padding></VBox>
+               </children></AnchorPane>
         </content>
       </ScrollPane>
    </center>
@@ -40,14 +46,14 @@
                 <Menu mnemonicParsing="false" text="File">
                   <items>
                     <MenuItem mnemonicParsing="false" onAction="#addFileToList" text="add" />
-                        <MenuItem mnemonicParsing="false" onAction="#refreshFileList" text="refresh" />
+                        <MenuItem mnemonicParsing="false" onAction="#addByFolder" text="add by Folder" />
                   </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Options">
                   <items>
-                    <MenuItem fx:id="sortByName" mnemonicParsing="false" text="Sort by name" />
-                        <MenuItem fx:id="sortByDate" mnemonicParsing="false" text="Sort by date" />
-                        <MenuItem fx:id="sortBySize" mnemonicParsing="false" text="Sort by size" />
+                        <MenuItem onAction="#sortByName" mnemonicParsing="false" text="Sort by name" />
+                        <MenuItem onAction="#sortByDate" mnemonicParsing="false" text="Sort by date" />
+                        <MenuItem onAction="#sortBySize" mnemonicParsing="false" text="Sort by size" />
                   </items>
                 </Menu>
               </menus>
