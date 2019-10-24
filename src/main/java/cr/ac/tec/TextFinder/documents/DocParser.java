@@ -112,7 +112,6 @@ public class DocParser implements TextFileParser {
                     System.out.println(paragraphList.get(numLines-1).getText());
                     prevLine = line;
                 }
-
             }
         } catch (Exception ex){ return; }
     }

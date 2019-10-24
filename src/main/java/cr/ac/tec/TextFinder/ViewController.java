@@ -24,7 +24,6 @@ public class ViewController {
     public MenuBar menu;
     public AnchorPane resultContainer;
     public BorderPane rootPane;
-    public Document document;
     public TecList<Document> list;
     Stage currentStage;
 
@@ -32,15 +31,7 @@ public class ViewController {
         this.currentStage = stage;
     }
     public void onSearchButtonClicked(){
-        System.out.println(document.getName());
-        System.out.println(document.getDate());
-        System.out.println(document.getSize());
-        System.out.println(document.getTree().searchNode("libre").getValue());
-        document.getContext("libre");
 
-
-        //System.out.println(document.getTree().searchNode("Emanuel"));
-        //TxtParser.getContext(document, "en");
     }
     public void refreshFileList(){
     }
@@ -58,8 +49,6 @@ public class ViewController {
             return;
         FileListManager.getInstance().addDocument(doc);
         fileList.getChildren().add(doc);
-        document = doc;
-
     }
     public void sortByDate(){
         //doSomething
