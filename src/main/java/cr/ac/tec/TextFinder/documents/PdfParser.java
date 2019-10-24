@@ -43,7 +43,6 @@ public class PdfParser implements TextFileParser{
         return parsedDoc;
     }
 
-    ////////////////////////////
     private void generateTree(Document fileToParse) {
         try (PDDocument document = PDDocument.load(fileToParse.getFile())){
             Pair<String, TecList> value;
@@ -82,13 +81,23 @@ public class PdfParser implements TextFileParser{
             System.out.println("Read error");
         }
     }
-    public static String getContext(BinaryTree tree, File file, String word_phrase){
-        TecList list = tree.searchNode(word_phrase).getValue();
-        String result = null;
+
+    public static void getContext(Document doc, String word_phrase) {
+        String[] sentence = word_phrase.split(" ");
+        if(sentence.length == 1)
+            word(doc, word_phrase);
+        else
+            phrase(doc, word_phrase);
+    }
+
+    private static void word(Document doc, String word) {
+        BinaryTree tree = doc.getTree();
+        File file = doc.getFile();
+        TecList list = tree.searchNode(word).getValue();
+        String context = "";
         Pair value;
         int line;
-        try{
-            PDDocument document = PDDocument.load(file);
+        try (PDDocument document = PDDocument.load(file)){
             if (!document.isEncrypted()) {
                 PDFTextStripperByArea pdfDocument = new PDFTextStripperByArea();
                 pdfDocument.setSortByPosition(true);
@@ -96,16 +105,20 @@ public class PdfParser implements TextFileParser{
                 String pdfText = pdfFile.getText(document);
                 String lines[] = pdfText.split("\\r?\\n");
                 int numLines = 1;
-                String sline;
-                for(int i=0; i<list.size(); i++){
+                for (int i=0; i<list.size(); i++){
                     value = (Pair) list.get(i);
                     line = (int) value.getKey();
-
+                    while(numLines!=line){
+                        numLines++;
+                    }
+                    context = lines[numLines-1];
+                    //SearchResult(doc, context, value)
+                    System.out.println(lines[numLines-1]);
                 }
             }
-        }catch (Exception ex){
+        }catch (IOException ex){ return; }
+    }
+    private static void phrase(Document doc, String phrase) {
 
-        }
-        return "Hola";
     }
 }

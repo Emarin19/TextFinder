@@ -1,8 +1,8 @@
 package cr.ac.tec.TextFinder;
 
 import cr.ac.tec.TextFinder.documents.Document;
-import cr.ac.tec.TextFinder.documents.DocumentType;
 import cr.ac.tec.TextFinder.documents.ParserFacade;
+import cr.ac.tec.TextFinder.documents.TxtParser;
 import cr.ac.tec.util.Collections.List.TecList;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
@@ -24,31 +24,33 @@ public class ViewController {
     public MenuBar menu;
     public AnchorPane resultContainer;
     public BorderPane rootPane;
+    public Document document;
+    public TecList<Document> list;
     Stage currentStage;
 
     public void configureControl(Stage stage){
         this.currentStage = stage;
     }
     public void onSearchButtonClicked(){
-        //phrase selected
-        boolean isPhrase = phraseCheckBox.isSelected();
-        if (isPhrase){
+        System.out.println(document.getName());
+        System.out.println(document.getDate());
+        System.out.println(document.getSize());
+        System.out.println(document.getTree().searchNode("libre").getValue());
+        document.getContext("libre");
 
-        }else{
 
-        }
+        //System.out.println(document.getTree().searchNode("Emanuel"));
+        //TxtParser.getContext(document, "en");
     }
     public void refreshFileList(){
     }
     public void addFileToList(){
         File file;
-
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().removeAll();
         FileChooser.ExtensionFilter filters = new FileChooser.ExtensionFilter("Archivos permitidos", "*.docx","*.pdf" ,"*.txt");
         fileChooser.getExtensionFilters().addAll(filters);
         file = fileChooser.showOpenDialog(currentStage);
-
         if(file==null)
             return;
         Document doc = ParserFacade.parse(file);
@@ -56,6 +58,8 @@ public class ViewController {
             return;
         FileListManager.getInstance().addDocument(doc);
         fileList.getChildren().add(doc);
+        document = doc;
+
     }
     public void sortByDate(){
         //doSomething
