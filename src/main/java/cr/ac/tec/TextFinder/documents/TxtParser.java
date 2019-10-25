@@ -110,8 +110,63 @@ public class TxtParser implements TextFileParser{
             }
         } catch (IOException ex){ return; }
     }
-
     private static void phrase(Document doc, String phrase) {
+        String[] sentence = phrase.split(" ");
+        File file = doc.getFile();
+        BinaryTree tree = doc.getTree();
+        TecList list = tree.searchNode(sentence[0]).getValue();
+        try {
+            FileReader fileReader = new FileReader(file);
+            BufferedReader reader = new BufferedReader(fileReader);
+            String context = "";
+            int numLines = 1;
+            Pair value;
+            int line;
+            for (int i=0; i<list.size(); i++){
+                value = (Pair) list.get(i);
+                line = (int) value.getKey();
+                boolean exist = false;
+                String sline;
+                while ((sline = reader.readLine()) != null){
+                    if(numLines == line){
+                        exist = verify(sline, sentence, 1);
+                        if (exist){
+                            context=sline;
+                            System.out.println(context);
+                            //SearchResult(doc, context, value)
+                        }
+                        numLines++;
+                        break;
+                    }
+                    numLines++;
+                }
+            }
+        } catch (IOException ex){ return; }
     }
 
+    private static boolean verify(String line, String[] sentence, int pos) {
+        boolean result = false;
+        String delimiters = ".,;:(){}[]/´ ";
+        StringTokenizer stk = new StringTokenizer(line, delimiters);
+        while (stk.hasMoreTokens()){
+            if (stk.nextToken().equalsIgnoreCase(sentence[0])){
+                break;
+            }
+        }
+
+        while (stk.hasMoreTokens()){
+            if (pos<sentence.length){
+                if(stk.nextToken().equalsIgnoreCase(sentence[pos])){
+                    result = true;
+                    pos++;
+                }
+                else {
+                    result = false;
+                    break;
+                }
+            }
+            else { break; }
+        }
+        return result;
+    }
 }

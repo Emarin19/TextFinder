@@ -114,11 +114,70 @@ public class PdfParser implements TextFileParser{
                     context = lines[numLines-1];
                     //SearchResult(doc, context, value)
                     System.out.println(lines[numLines-1]);
+                    System.out.println();
                 }
             }
         }catch (IOException ex){ return; }
     }
     private static void phrase(Document doc, String phrase) {
+        String[] sentence = phrase.split(" ");
+        File file = doc.getFile();
+        BinaryTree tree = doc.getTree();
+        TecList list = tree.searchNode(sentence[0]).getValue();
+        try (PDDocument document = PDDocument.load(file)){
+            if (!document.isEncrypted()) {
+                PDFTextStripperByArea pdfDocument = new PDFTextStripperByArea();
+                pdfDocument.setSortByPosition(true);
+                PDFTextStripper pdfFile = new PDFTextStripper();
+                String pdfText = pdfFile.getText(document);
+                String lines[] = pdfText.split("\\r?\\n");
+                String context = "";
+                int numLines = 1;
+                Pair value;
+                int line;
+                for (int i=0; i<list.size(); i++){
+                    value = (Pair) list.get(i);
+                    line = (int) value.getKey();
+                    boolean exist = false;
+                    while(numLines!=line){
+                        numLines++;
+                    }
+                    exist = verify(lines[numLines-1], sentence, 1);
+                    if(exist){
+                        context = lines[numLines-1];
+                        //SearchResult(doc, context, value)
+                        System.out.println(lines[numLines-1]);
+                        System.out.println();
+                    }
+                }
+            }
+        }catch (IOException ex){ return; }
 
+    }
+
+    private static boolean verify(String line, String[] sentence, int pos) {
+        boolean result = false;
+        String delimiters = ".,;:(){}[]/´ ";
+        StringTokenizer stk = new StringTokenizer(line, delimiters);
+        while (stk.hasMoreTokens()){
+            if (stk.nextToken().equalsIgnoreCase(sentence[0])){
+                break;
+            }
+        }
+
+        while (stk.hasMoreTokens()){
+            if (pos<sentence.length){
+                if(stk.nextToken().equalsIgnoreCase(sentence[pos])){
+                    result = true;
+                    pos++;
+                }
+                else {
+                    result = false;
+                    break;
+                }
+            }
+            else { break; }
+        }
+        return result;
     }
 }

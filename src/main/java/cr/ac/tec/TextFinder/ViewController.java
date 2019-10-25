@@ -24,6 +24,7 @@ public class ViewController {
     public MenuBar menu;
     public AnchorPane resultContainer;
     public BorderPane rootPane;
+    public Document document;
     public TecList<Document> list;
     Stage currentStage;
 
@@ -31,7 +32,6 @@ public class ViewController {
         this.currentStage = stage;
     }
     public void onSearchButtonClicked(){
-
     }
     public void refreshFileList(){
     }
@@ -49,6 +49,8 @@ public class ViewController {
             return;
         FileListManager.getInstance().addDocument(doc);
         fileList.getChildren().add(doc);
+        document = doc;
+
     }
     public void sortByDate(){
         //doSomething

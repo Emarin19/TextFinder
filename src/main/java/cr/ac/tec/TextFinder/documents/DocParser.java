@@ -115,6 +115,63 @@ public class DocParser implements TextFileParser {
             }
         } catch (Exception ex){ return; }
     }
-    private static void phrase(Document doc, String word_phrase) {
+    private static void phrase(Document doc, String phrase) {
+        String[] sentence = phrase.split(" ");
+        File file = doc.getFile();
+        BinaryTree tree = doc.getTree();
+        TecList list = tree.searchNode(sentence[0]).getValue();
+        try{
+            FileInputStream fis = new FileInputStream(file);
+            XWPFDocument docx = new XWPFDocument(OPCPackage.open(fis));
+            List<XWPFParagraph> paragraphList = docx.getParagraphs();
+            String context = "";
+            int numLines = 1;
+            int prevLine = 0;
+            Pair value;
+            int line;
+            String sline;
+            for (int i=0; i<list.size(); i++){
+                value = (Pair) list.get(i);
+                line = (int) value.getKey();
+                boolean exist = false;
+                if(prevLine!=line){
+                    while (numLines!=line){
+                        numLines++;
+                    }
+                    exist = verify(paragraphList.get(numLines-1).getText(), sentence, 1);
+                    if(exist){
+                        context = paragraphList.get(numLines-1).getText();
+                        //SearchResult(doc, context, value)
+                        System.out.println(context);
+                        prevLine = line;
+                    }
+                }
+            }
+        } catch (Exception ex){ return; }
+    }
+    private static boolean verify(String line, String[] sentence, int pos) {
+        boolean result = false;
+        String delimiters = ".,;:(){}[]/´ ";
+        StringTokenizer stk = new StringTokenizer(line, delimiters);
+        while (stk.hasMoreTokens()){
+            if (stk.nextToken().equalsIgnoreCase(sentence[0])){
+                break;
+            }
+        }
+
+        while (stk.hasMoreTokens()){
+            if (pos<sentence.length){
+                if(stk.nextToken().equalsIgnoreCase(sentence[pos])){
+                    result = true;
+                    pos++;
+                }
+                else {
+                    result = false;
+                    break;
+                }
+            }
+            else { break; }
+        }
+        return result;
     }
 }
