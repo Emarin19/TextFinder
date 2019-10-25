@@ -14,7 +14,7 @@ public class BinaryTree {
         }else{
             TreeNode current = root;
             while(true){
-                if(value.getKey().compareTo(current.data.getKey()) < 0) {
+                if(value.getKey().compareToIgnoreCase(current.data.getKey()) < 0) {
                     //mayor
                     if (current.right == null) {
                         current.right = new TreeNode(value);
@@ -23,7 +23,7 @@ public class BinaryTree {
                         current = current.right;
                     }
                 }
-                else if(value.getKey().compareTo(current.data.getKey()) > 0) {
+                else if(value.getKey().compareToIgnoreCase(current.data.getKey()) > 0) {
                     //menor
                     if (current.left == null) {
                         current.left = new TreeNode(value);
@@ -45,7 +45,7 @@ public class BinaryTree {
         if(!isEmpty()){
             TreeNode current = root;
             while(current!=null) {
-                int compareResult = word.compareTo(current.data.getKey());
+                int compareResult = word.compareToIgnoreCase(current.data.getKey());
                 if(compareResult == 0){
                     result = true;
                     break;
@@ -68,7 +68,7 @@ public class BinaryTree {
         if(contains(word)){
             TreeNode current = root;
             while(current!=null) {
-                int compareResult = word.compareTo(current.data.getKey());
+                int compareResult = word.compareToIgnoreCase(current.data.getKey());
                 if(compareResult == 0){
                     result = current.data;
                     break;
@@ -95,7 +95,6 @@ public class BinaryTree {
     }
     @Override
     public String toString() {
-        //return preOrder(root, " holi");
         return super.toString();
     }
 }

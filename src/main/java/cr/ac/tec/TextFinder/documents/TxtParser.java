@@ -1,5 +1,6 @@
 package cr.ac.tec.TextFinder.documents;
 
+import cr.ac.tec.TextFinder.FileListManager;
 import cr.ac.tec.util.Collections.BinaryTree;
 import cr.ac.tec.util.Collections.List.TecList;
 import java.io.BufferedReader;
@@ -85,7 +86,12 @@ public class TxtParser implements TextFileParser{
     private static void word(Document doc, String word) {
         BinaryTree tree = doc.getTree();
         File file = doc.getFile();
-        TecList list = tree.searchNode(word).getValue();
+        TecList list = null;
+        try {
+            list = tree.searchNode(word).getValue();
+        }catch(Exception e){
+            return;
+        }
         String context = "";
         Pair value;
         int line;
@@ -100,8 +106,10 @@ public class TxtParser implements TextFileParser{
                 while ((sline = buffer.readLine()) != null) {
                     if(numLines == line){
                         context=sline;
-                        System.out.println(context);
-                        //SearchResult(doc, context, value)
+
+                        SearchResult temp = new SearchResult(doc, context, value, word);
+                        FileListManager.getInstance().addSearchResult(temp);
+
                         numLines++;
                         break;
                     }

@@ -26,7 +26,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("ViewModel.fxml"));
         Parent root = loader.load();
-        primaryStage.setScene(new Scene(root, 800, 600));
+        primaryStage.setScene(new Scene(root, 1280, 600));
         primaryStage.show();
         ViewController controlGUI = loader.getController();
         controlGUI.configureControl(primaryStage);

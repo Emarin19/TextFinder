@@ -1,17 +1,24 @@
 package cr.ac.tec.TextFinder;
 
 import cr.ac.tec.TextFinder.documents.Document;
+import cr.ac.tec.TextFinder.documents.ParserFacade;
+import cr.ac.tec.TextFinder.documents.SearchResult;
+import cr.ac.tec.TextFinder.documents.SortBy;
 import cr.ac.tec.util.Collections.List.TecList;
+import javafx.util.Pair;
 
+import java.io.File;
 import java.util.Arrays;
 
 public class FileListManager {
     static FileListManager instance;
     ViewController viewController;
-    private TecList<Document> documentsList = null;
+    private TecList<Document> docList = null;
+    private TecList<SearchResult> srchResults = null;
 
     private FileListManager(){
-        documentsList = new TecList<>();
+        docList = new TecList<>();
+        srchResults = new TecList<>();
     }
     public static FileListManager getInstance() {
         if(instance==null) {
@@ -20,57 +27,94 @@ public class FileListManager {
         return instance;
     }
     public synchronized void addDocument(Document newDocument){
-        System.out.print(newDocument.getTree().toString());
-        documentsList.add(newDocument);
+        docList.add(newDocument);
     }
     public synchronized void deleteDocument(Document toDelete){
-        documentsList.removeValue(toDelete);
+        docList.removeValue(toDelete);
     }
-    public synchronized TecList<Document> getDocumentsList(){
-        final TecList<Document> readOnlyDocuments = documentsList;
+    public synchronized TecList<Document> getDocList(){
+        final TecList<Document> readOnlyDocuments = docList;
         return readOnlyDocuments;
     }
-
+    public synchronized void refreshDocuments(){
+        TecList<File> tempList = new TecList<File>();
+        for (Document doc:docList) {
+            deleteDocument(doc);
+            viewController.resultContainer.getChildren().remove(doc);
+            tempList.add(doc.getFile());
+        }
+        for (File file: tempList) {
+            addDocument(ParserFacade.parse(file));
+        }
+    }
+    public void addSearchResult(SearchResult result){
+        srchResults.add(result);
+        viewController.resultContainer.getChildren().add(result);
+    }
+    public void sortResults(SortBy args) {
+        for (SearchResult srchRes: srchResults) {
+            viewController.resultContainer.getChildren().remove(srchRes);
+        }
+        if(args == SortBy.NAME)
+            sortListByName();
+        else if(args == SortBy.SIZE){
+            sortListBySize();}
+        else if(args == SortBy.DATE){
+            sortListByDate();}
+        else{
+        }
+        for (SearchResult srchRes: srchResults) {
+            viewController.resultContainer.getChildren().add(srchRes);
+        }
+    }
     //Bubble sort
-    public void sortListByDate(TecList<Document> list){
-        int n = list.size();
-        Document temp = null;
-        for (int i=0; i<n; i++){
-            for(int j=1; j<(n-i); j++){
-                if (list.get(j-1).getDate() > list.get(j).getDate()){
-                    temp = list.get(j-1);
-                    list.reinsert(list.get(j), j-1);
-                    list.reinsert(temp, j);
+    public void sortListByDate(){
+        int n = srchResults.size();
+        SearchResult temp = null;
+        boolean stop = false;
+        while(!stop) {
+            int c = 0;
+            for (int i = 0; i < n; i++) {
+                for (int j = i; j < n; j++) {
+                    if (srchResults.get(i).getDoc().getDate() > srchResults.get(j).getDoc().getDate()) {
+                        temp = srchResults.get(i);
+                        srchResults.reinsert(srchResults.get(j), i);
+                        srchResults.reinsert(temp, j);
+                        c++;
+                    }
                 }
+            }
+            if (c == 0) {
+                stop = true;
+            }else{
             }
         }
     }
-
     //Radix sort
-    public void sortListBySize(TecList<Document> list){
-        int n = list.size();
+    public void sortListBySize(){
+        int n = srchResults.size();
         int[] array = new int[n];
-        for (int i=0; i<list.size(); i++){
-            array[i] = list.get(i).getSize();
+        for (int i=0; i<srchResults.size(); i++){
+            array[i] = srchResults.get(i).getDoc().getSize();
         }
         int max = getMaximum(array, n);
         for (int exp = 1; max/exp > 0; exp *= 10) {
             sort(array, n, exp);
         }
 
-        TecList<Document> orderedList = new TecList<>();
+        TecList<SearchResult> orderedList = new TecList<>();
         for(int i=0; i<array.length; i++){
-            for(int j=0; j<list.size(); j++){
-                if(array[i] == list.get(j).getSize()){
-                    orderedList.add(list.get(j));
-                    list.removeValue(list.get(j));
+            for(int j=0; j<srchResults.size(); j++){
+                if(array[i] == srchResults.get(j).getDoc().getSize()){
+                    orderedList.add(srchResults.get(j));
+                    srchResults.removeValue(srchResults.get(j));
                     break;
                 }
             }
         }
 
         for (int i=0; i<orderedList.size(); i++){
-            list.add(orderedList.get(i));
+            srchResults.add(orderedList.get(i));
         }
         orderedList = null;
     }
@@ -103,21 +147,20 @@ public class FileListManager {
         for (i = 0; i < n; i++)
             array[i] = output[i];
     }
-
     //Quick sort
-    public void sortListByName(TecList<Document> list){
-        sortListByName(list, 0, list.size()-1);
+    public void sortListByName(){
+        sortListByName(srchResults, 0, srchResults.size()-1);
     }
-    private void sortListByName(TecList<Document> list, int start, int end){
+    private void sortListByName(TecList<SearchResult> list, int start, int end){
         int i = start;
         int j = end;
         if(end-start >=1){
-            String pivot = list.get(start).getName();
+            String pivot = list.get(start).getDoc().getName();
             while(j>i){
-                while(list.get(i).getName().compareTo(pivot) <= 0 && i<= end && j>i){
+                while(list.get(i).getDoc().getName().compareToIgnoreCase(pivot) <= 0 && i<= end && j>i){
                     i++;
                 }
-                while(list.get(j).getName().compareTo(pivot) > 0 && j>=start && j>=i){
+                while(list.get(j).getDoc().getName().compareToIgnoreCase(pivot) > 0 && j>=start && j>=i){
                     j--;
                 }
                 if(j>i){
@@ -130,9 +173,15 @@ public class FileListManager {
         }
         else{ return; }
     }
-    private void swap (TecList<Document> list, int index1, int index2){
-        Document temp = list.get(index1);
+    private void swap (TecList<SearchResult> list, int index1, int index2){
+        SearchResult temp = list.get(index1);
         list.reinsert(list.get(index2), index1);
         list.reinsert(temp, index2);
+    }
+    public synchronized TecList<SearchResult> getSrchResults() {
+        return srchResults;
+    }
+    public synchronized void setSrchResults(TecList<SearchResult> srchResults) {
+        this.srchResults = srchResults;
     }
 }
