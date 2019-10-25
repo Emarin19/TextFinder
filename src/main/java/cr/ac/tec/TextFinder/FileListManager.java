@@ -28,7 +28,6 @@ public class FileListManager {
     }
     public synchronized void addDocument(Document newDocument){
         docList.add(newDocument);
-        addSearchResult(new SearchResult(newDocument, "LMAO", new Pair<>(2,3)));
     }
     public synchronized void deleteDocument(Document toDelete){
         docList.removeValue(toDelete);
@@ -48,9 +47,6 @@ public class FileListManager {
             addDocument(ParserFacade.parse(file));
         }
     }
-
-
-
     public void addSearchResult(SearchResult result){
         srchResults.add(result);
         viewController.resultContainer.getChildren().add(result);
@@ -62,13 +58,10 @@ public class FileListManager {
         if(args == SortBy.NAME)
             sortListByName();
         else if(args == SortBy.SIZE){
-            System.out.println("uwu");
             sortListBySize();}
         else if(args == SortBy.DATE){
-            System.out.println("date ots");
             sortListByDate();}
         else{
-            System.out.println("ssssssssssssssssssssssssssssss");
         }
         for (SearchResult srchRes: srchResults) {
             viewController.resultContainer.getChildren().add(srchRes);

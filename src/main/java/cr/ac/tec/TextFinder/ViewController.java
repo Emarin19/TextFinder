@@ -37,13 +37,20 @@ public class ViewController {
     public void test(){
     }
     public void onSearchButtonClicked(){
+        TecList<SearchResult> tempList = FileListManager.getInstance().getSrchResults();
+        for (SearchResult result: tempList) {
+            resultContainer.getChildren().remove(result);
+        }
         FileListManager.getInstance().setSrchResults(new TecList<>());
         //phrase selected
         boolean isPhrase = phraseCheckBox.isSelected();
         if (isPhrase){
 
         }else{
-
+            TecList<Document> documents = FileListManager.getInstance().getDocList();
+            for (Document doc: documents) {
+                doc.getContext(searchTextField.getText());
+            }
         }
     }
     public void addByFolder(){

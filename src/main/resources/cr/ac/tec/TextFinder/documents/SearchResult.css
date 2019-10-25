@@ -15,3 +15,8 @@
     -fx-border-width: 3;
     -fx-border-radius: 10;
 }
+#context{
+    -fx-background-color: #afb1b3;
+    -fx-fill: black;
+    -fx-background-radius: 20;
+}

@@ -1,5 +1,6 @@
 package cr.ac.tec.TextFinder.documents;
 
+import cr.ac.tec.TextFinder.FileListManager;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
@@ -74,7 +75,7 @@ public class DocParser implements TextFileParser {
         } catch (IOException e){
             System.out.println("Read error");
         } catch (InvalidFormatException e){
-            System.out.println("Incorrect format");;
+            System.out.println("Incorrect format");
         }
     }
 
@@ -89,7 +90,12 @@ public class DocParser implements TextFileParser {
     private static void word(Document doc, String word) {
         BinaryTree tree = doc.getTree();
         File file = doc.getFile();
-        TecList list = tree.searchNode(word).getValue();
+        TecList positionsList = null;
+        try {
+            positionsList = tree.searchNode(word).getValue();
+        }catch(Exception e){
+            return;
+        }
         String context = "";
         Pair value;
         int line;
@@ -100,15 +106,18 @@ public class DocParser implements TextFileParser {
             List<XWPFParagraph> paragraphList = docx.getParagraphs();
             int numLines = 1;
             String sline;
-            for (int i=0; i<list.size(); i++){
-                value = (Pair) list.get(i);
+            for (int i=0; i<positionsList.size(); i++){
+                value = (Pair) positionsList.get(i);
                 line = (int) value.getKey();
                 if(prevLine!=line){
                     while (numLines!=line){
                         numLines++;
                     }
                     context = paragraphList.get(numLines-1).getText();
-                    //SearchResult(doc, context, value)
+
+                    SearchResult temp = new SearchResult(doc, context, value);
+                    FileListManager.getInstance().addSearchResult(temp);
+
                     System.out.println(paragraphList.get(numLines-1).getText());
                     prevLine = line;
                 }

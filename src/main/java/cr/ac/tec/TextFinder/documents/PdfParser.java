@@ -1,5 +1,6 @@
 package cr.ac.tec.TextFinder.documents;
 
+import cr.ac.tec.TextFinder.FileListManager;
 import cr.ac.tec.util.Collections.BinaryTree;
 import cr.ac.tec.util.Collections.List.TecList;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -93,7 +94,12 @@ public class PdfParser implements TextFileParser{
     private static void word(Document doc, String word) {
         BinaryTree tree = doc.getTree();
         File file = doc.getFile();
-        TecList list = tree.searchNode(word).getValue();
+        TecList list = null;
+        try {
+            list = tree.searchNode(word).getValue();
+        }catch(Exception e){
+            return;
+        }
         String context = "";
         Pair value;
         int line;
@@ -112,7 +118,10 @@ public class PdfParser implements TextFileParser{
                         numLines++;
                     }
                     context = lines[numLines-1];
-                    //SearchResult(doc, context, value)
+
+                    SearchResult temp = new SearchResult(doc, context, value);
+                    FileListManager.getInstance().addSearchResult(temp);
+
                     System.out.println(lines[numLines-1]);
                 }
             }

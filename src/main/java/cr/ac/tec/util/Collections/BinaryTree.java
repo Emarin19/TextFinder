@@ -68,7 +68,7 @@ public class BinaryTree {
         if(contains(word)){
             TreeNode current = root;
             while(current!=null) {
-                int compareResult = word.compareTo(current.data.getKey());
+                int compareResult = word.compareToIgnoreCase(current.data.getKey());
                 if(compareResult == 0){
                     result = current.data;
                     break;
