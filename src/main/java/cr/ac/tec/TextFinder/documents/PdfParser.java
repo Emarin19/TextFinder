@@ -119,10 +119,8 @@ public class PdfParser implements TextFileParser{
                     }
                     context = lines[numLines-1];
 
-                    SearchResult temp = new SearchResult(doc, context, value);
+                    SearchResult temp = new SearchResult(doc, context, value, word);
                     FileListManager.getInstance().addSearchResult(temp);
-
-                    System.out.println(lines[numLines-1]);
                 }
             }
         }catch (IOException ex){ return; }

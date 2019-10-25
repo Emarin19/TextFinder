@@ -115,10 +115,8 @@ public class DocParser implements TextFileParser {
                     }
                     context = paragraphList.get(numLines-1).getText();
 
-                    SearchResult temp = new SearchResult(doc, context, value);
+                    SearchResult temp = new SearchResult(doc, context, value, word);
                     FileListManager.getInstance().addSearchResult(temp);
-
-                    System.out.println(paragraphList.get(numLines-1).getText());
                     prevLine = line;
                 }
             }

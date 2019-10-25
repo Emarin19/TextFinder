@@ -52,9 +52,9 @@
                 </Menu>
                 <Menu mnemonicParsing="false" text="Options">
                   <items>
-                        <MenuItem onAction="#sortByName" mnemonicParsing="false" text="Sort by name" />
-                        <MenuItem onAction="#sortByDate" mnemonicParsing="false" text="Sort by date" />
-                        <MenuItem onAction="#sortBySize" mnemonicParsing="false" text="Sort by size" />
+                        <MenuItem mnemonicParsing="false" onAction="#sortByName" text="Sort by name" />
+                        <MenuItem mnemonicParsing="false" onAction="#sortByDate" text="Sort by date" />
+                        <MenuItem mnemonicParsing="false" onAction="#sortBySize" text="Sort by size" />
                   </items>
                 </Menu>
               </menus>
@@ -95,7 +95,7 @@
    <right>
       <ScrollPane fx:id="fileListScrollPane" hbarPolicy="NEVER" BorderPane.alignment="CENTER">
          <content>
-            <VBox fx:id="fileList" minHeight="200.0" minWidth="-Infinity" prefWidth="300.0" spacing="10.0">
+            <VBox fx:id="fileList" minHeight="200.0" minWidth="-Infinity" prefWidth="320.0" spacing="10.0">
                <padding>
                   <Insets left="20.0" top="10.0" />
                </padding></VBox>

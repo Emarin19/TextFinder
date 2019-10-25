@@ -106,9 +106,8 @@ public class TxtParser implements TextFileParser{
                 while ((sline = buffer.readLine()) != null) {
                     if(numLines == line){
                         context=sline;
-                        System.out.println(context);
 
-                        SearchResult temp = new SearchResult(doc, context, value);
+                        SearchResult temp = new SearchResult(doc, context, value, word);
                         FileListManager.getInstance().addSearchResult(temp);
 
                         numLines++;
