@@ -3,6 +3,7 @@ package cr.ac.tec.TextFinder;
 import cr.ac.tec.TextFinder.documents.*;
 import cr.ac.tec.util.Collections.List.TecList;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -79,7 +80,6 @@ public class ViewController {
         }
     }
     public void sortByDate(){
-        System.out.print("lamo");
         FileListManager.getInstance().sortResults(SortBy.DATE);
     }
     public void sortBySize(){
@@ -89,4 +89,8 @@ public class ViewController {
         FileListManager.getInstance().sortResults(SortBy.NAME);
     }
     public void refreshDocumentResults(){}
+
+    public void indexRefresh(ActionEvent event) {
+        FileListManager.getInstance().refreshDocuments();
+    }
 }

@@ -1,11 +1,13 @@
 package cr.ac.tec.TextFinder;
 
 import cr.ac.tec.TextFinder.documents.Document;
+import cr.ac.tec.TextFinder.documents.ParserFacade;
 import cr.ac.tec.TextFinder.documents.SearchResult;
 import cr.ac.tec.TextFinder.documents.SortBy;
 import cr.ac.tec.util.Collections.List.TecList;
 import javafx.util.Pair;
 
+import java.io.File;
 import java.util.Arrays;
 
 public class FileListManager {
@@ -13,6 +15,7 @@ public class FileListManager {
     ViewController viewController;
     private TecList<Document> docList = null;
     private TecList<SearchResult> srchResults = null;
+
     private FileListManager(){
         docList = new TecList<>();
         srchResults = new TecList<>();
@@ -34,6 +37,19 @@ public class FileListManager {
         final TecList<Document> readOnlyDocuments = docList;
         return readOnlyDocuments;
     }
+    public synchronized void refreshDocuments(){
+        TecList<File> tempList = new TecList<File>();
+        for (Document doc:docList) {
+            deleteDocument(doc);
+            viewController.resultContainer.getChildren().remove(doc);
+            tempList.add(doc.getFile());
+        }
+        for (File file: tempList) {
+            addDocument(ParserFacade.parse(file));
+        }
+    }
+
+
 
     public void addSearchResult(SearchResult result){
         srchResults.add(result);

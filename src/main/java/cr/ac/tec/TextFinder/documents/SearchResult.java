@@ -20,7 +20,7 @@ public class SearchResult extends AnchorPane {
     public Label fileDate;
     public Label refA;
     public Label refB;
-    Document doc;
+    private Document doc;
     public SearchResult(Document document, String context, Pair<Integer, Integer> reference){
         this.doc = document;
         FXMLLoader fxmlLoader = new FXMLLoader(
