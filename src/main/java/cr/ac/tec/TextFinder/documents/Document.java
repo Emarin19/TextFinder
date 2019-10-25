@@ -109,7 +109,6 @@ public class Document extends AnchorPane {
     }
     public void setTree(BinaryTree binaryTree) {
         this.tree = binaryTree;
-
     }
     public File getFile() {
         return file;
@@ -136,17 +135,15 @@ public class Document extends AnchorPane {
 
     }
 
-    public String getContext(String word_phrase){
-        String result = null;
+    public void getContext(String word_phrase){
         if(type == DocumentType.TXT){
-            result = TxtParser.getContext(tree, file, word_phrase);
+            TxtParser.getContext(this, word_phrase);
         }
         else if(type == DocumentType.DOC){
-            result = DocParser.getContext(tree, file, word_phrase);
+            DocParser.getContext(this, word_phrase);
         }
         else if(type == DocumentType.PDF){
-            result = PdfParser.getContext(tree, file, word_phrase);
+            PdfParser.getContext(this, word_phrase);
         }
-        return result;
     }
 }

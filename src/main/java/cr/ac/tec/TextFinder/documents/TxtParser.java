@@ -8,6 +8,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.FileReader;
 import javafx.util.Pair;
+import org.apache.poi.ss.formula.functions.T;
+
 import java.text.Normalizer;
 import java.util.StringTokenizer;
 
@@ -72,9 +74,19 @@ public class TxtParser implements TextFileParser{
         }
     }
 
-    public static String getContext(BinaryTree tree, File file, String word_phrase){
-        TecList list = tree.searchNode(word_phrase).getValue();
-        String result = null;
+    public static void getContext(Document doc, String word_phrase) {
+        String[] sentence = word_phrase.split(" ");
+        if(sentence.length == 1)
+            word(doc, word_phrase);
+        else
+            phrase(doc, word_phrase);
+    }
+
+    private static void word(Document doc, String word) {
+        BinaryTree tree = doc.getTree();
+        File file = doc.getFile();
+        TecList list = tree.searchNode(word).getValue();
+        String context = "";
         Pair value;
         int line;
         try {
@@ -86,20 +98,20 @@ public class TxtParser implements TextFileParser{
                 value = (Pair) list.get(i);
                 line = (int) value.getKey();
                 while ((sline = buffer.readLine()) != null) {
-                    System.out.println(numLines);
                     if(numLines == line){
-                        System.out.println(sline);
+                        context=sline;
+                        System.out.println(context);
+                        //SearchResult(doc, context, value)
                         numLines++;
                         break;
                     }
                     numLines++;
                 }
             }
-        } catch (IOException ex){
-            System.out.println("Read error");
-        }
-        return "Fin";
+        } catch (IOException ex){ return; }
     }
 
+    private static void phrase(Document doc, String phrase) {
+    }
 
 }

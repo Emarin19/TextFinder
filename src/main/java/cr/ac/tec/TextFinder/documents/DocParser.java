@@ -78,7 +78,43 @@ public class DocParser implements TextFileParser {
         }
     }
 
-    public static String getContext(BinaryTree tree, File file, String word_phrase){
-        return "Hola";
+    public static void getContext(Document doc, String word_phrase){
+        String[] sentence = word_phrase.split(" ");
+        if(sentence.length == 1)
+            word(doc, word_phrase);
+        else
+            phrase(doc, word_phrase);
+    }
+
+    private static void word(Document doc, String word) {
+        BinaryTree tree = doc.getTree();
+        File file = doc.getFile();
+        TecList list = tree.searchNode(word).getValue();
+        String context = "";
+        Pair value;
+        int line;
+        int prevLine = 0;
+        try{
+            FileInputStream fis = new FileInputStream(file);
+            XWPFDocument docx = new XWPFDocument(OPCPackage.open(fis));
+            List<XWPFParagraph> paragraphList = docx.getParagraphs();
+            int numLines = 1;
+            String sline;
+            for (int i=0; i<list.size(); i++){
+                value = (Pair) list.get(i);
+                line = (int) value.getKey();
+                if(prevLine!=line){
+                    while (numLines!=line){
+                        numLines++;
+                    }
+                    context = paragraphList.get(numLines-1).getText();
+                    //SearchResult(doc, context, value)
+                    System.out.println(paragraphList.get(numLines-1).getText());
+                    prevLine = line;
+                }
+            }
+        } catch (Exception ex){ return; }
+    }
+    private static void phrase(Document doc, String word_phrase) {
     }
 }
