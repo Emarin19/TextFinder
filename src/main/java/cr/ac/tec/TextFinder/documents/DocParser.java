@@ -7,7 +7,6 @@ import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import cr.ac.tec.util.Collections.List.TecList;
 import cr.ac.tec.util.Collections.BinaryTree;
-import java.io.FileNotFoundException;
 import java.text.Normalizer;
 import java.util.StringTokenizer;
 import java.io.FileInputStream;
@@ -27,6 +26,7 @@ import java.io.File;
  * @since October 2019
  */
 public class DocParser implements TextFileParser {
+    private static String delimiters = ".,;:(){}[]/´ ";
     private static DocParser instance;
     private DocParser() {
     }
@@ -35,6 +35,12 @@ public class DocParser implements TextFileParser {
             instance = new DocParser();
         return instance;
     }
+
+    /**
+     * Parse the file and create a word tree from it
+     * @param file
+     * @return the document with its respective word tree
+     */
     public Document parseDocument(File file) {
         Document parsedDoc = new Document(file);
         parsedDoc.setType(DocumentType.DOC);
@@ -43,13 +49,12 @@ public class DocParser implements TextFileParser {
     }
 
     private void generateTree(Document fileToParse){
+        Pair<String, TecList> value;
+        BinaryTree tree = new BinaryTree();
         try{
-            Pair<String, TecList> value;
-            BinaryTree tree = new BinaryTree();
             FileInputStream fis = new FileInputStream(fileToParse.getFile());
             XWPFDocument docx = new XWPFDocument(OPCPackage.open(fis));
             List<XWPFParagraph> paragraphList = docx.getParagraphs();
-            String delimiters = ".,;:(){}[]/´ ";
             int numparagraph = 1;
             int position = 0;
             for(XWPFParagraph paragraph : paragraphList){
@@ -70,77 +75,90 @@ public class DocParser implements TextFileParser {
             fis.close();
             docx.close();
             fileToParse.setTree(tree);
-        } catch (FileNotFoundException e) {
-            System.out.println("File not found");
         } catch (IOException e){
-            System.out.println("Read error");
+            e.printStackTrace();
         } catch (InvalidFormatException e){
-            System.out.println("Incorrect format");
+            e.printStackTrace();
         }
     }
 
+    /**
+     * look for the context surrounding a word or phrase in the file
+     * @param doc
+     * @param word_phrase
+     */
     public static void getContext(Document doc, String word_phrase){
-        String[] sentence = word_phrase.split(" ");
+        StringTokenizer stk = new StringTokenizer(word_phrase, delimiters);
+        String[] sentence = new String[stk.countTokens()];
+        int pos = 0;
+        while (stk.hasMoreTokens()){
+            String word = Normalizer
+                    .normalize(stk.nextToken(), Normalizer.Form.NFD)
+                    .replaceAll("[^\\p{ASCII}]", "");
+            sentence[pos] = word;
+            pos++;
+        }
         if(sentence.length == 1)
             word(doc, word_phrase);
         else
-            phrase(doc, word_phrase);
+            phrase(doc, sentence);
     }
 
     private static void word(Document doc, String word) {
         BinaryTree tree = doc.getTree();
         File file = doc.getFile();
-        TecList positionsList = null;
+        TecList list;
         try {
-            positionsList = tree.searchNode(word).getValue();
-        }catch(Exception e){
-            return;
-        }
+            list = tree.searchNode(word).getValue();
+        }catch(Exception e){ return; }
+
         String context = "";
+        int prevLine = 0;
+        int numLines = 1;
         Pair value;
         int line;
-        int prevLine = 0;
         try{
             FileInputStream fis = new FileInputStream(file);
             XWPFDocument docx = new XWPFDocument(OPCPackage.open(fis));
             List<XWPFParagraph> paragraphList = docx.getParagraphs();
-            int numLines = 1;
-            String sline;
-            for (int i=0; i<positionsList.size(); i++){
-                value = (Pair) positionsList.get(i);
+            for (int i=0; i<list.size(); i++){
+                value = (Pair) list.get(i);
                 line = (int) value.getKey();
                 if(prevLine!=line){
                     while (numLines!=line){
                         numLines++;
                     }
                     context = paragraphList.get(numLines-1).getText();
-
+                    System.out.println(context);
                     SearchResult temp = new SearchResult(doc, context, value, word);
                     FileListManager.getInstance().addSearchResult(temp);
-                    prevLine = line;
                 }
+                prevLine = line;
             }
-        } catch (Exception ex){ return; }
+        } catch (Exception e){ e.printStackTrace(); }
     }
-    private static void phrase(Document doc, String phrase) {
-        String[] sentence = phrase.split(" ");
-        File file = doc.getFile();
+
+    private static void phrase(Document doc, String[] sentence) {
         BinaryTree tree = doc.getTree();
-        TecList list = tree.searchNode(sentence[0]).getValue();
+        File file = doc.getFile();
+        TecList list;
+        try{
+            list = tree.searchNode(sentence[0]).getValue();
+        }catch(Exception e){ return; }
+
+        String context = "";
+        int prevLine = 0;
+        int numLines = 1;
+        Pair value;
+        int line;
         try{
             FileInputStream fis = new FileInputStream(file);
             XWPFDocument docx = new XWPFDocument(OPCPackage.open(fis));
             List<XWPFParagraph> paragraphList = docx.getParagraphs();
-            String context = "";
-            int numLines = 1;
-            int prevLine = 0;
-            Pair value;
-            int line;
-            String sline;
             for (int i=0; i<list.size(); i++){
                 value = (Pair) list.get(i);
                 line = (int) value.getKey();
-                boolean exist = false;
+                boolean exist;
                 if(prevLine!=line){
                     while (numLines!=line){
                         numLines++;
@@ -148,27 +166,33 @@ public class DocParser implements TextFileParser {
                     exist = verify(paragraphList.get(numLines-1).getText(), sentence, 1);
                     if(exist){
                         context = paragraphList.get(numLines-1).getText();
-                        //SearchResult(doc, context, value)
                         System.out.println(context);
-                        prevLine = line;
+                        //SearchResult(doc, context, value)
+
                     }
                 }
+                prevLine = line;
             }
         } catch (Exception ex){ return; }
     }
     private static boolean verify(String line, String[] sentence, int pos) {
         boolean result = false;
-        String delimiters = ".,;:(){}[]/´ ";
         StringTokenizer stk = new StringTokenizer(line, delimiters);
         while (stk.hasMoreTokens()){
-            if (stk.nextToken().equalsIgnoreCase(sentence[0])){
+            String word = Normalizer
+                    .normalize(stk.nextToken(), Normalizer.Form.NFD)
+                    .replaceAll("[^\\p{ASCII}]", "");
+            if (word.equalsIgnoreCase(sentence[0])){
                 break;
             }
         }
 
         while (stk.hasMoreTokens()){
             if (pos<sentence.length){
-                if(stk.nextToken().equalsIgnoreCase(sentence[pos])){
+                String word = Normalizer
+                        .normalize(stk.nextToken(), Normalizer.Form.NFD)
+                        .replaceAll("[^\\p{ASCII}]", "");
+                if(word.equalsIgnoreCase(sentence[pos])){
                     result = true;
                     pos++;
                 }

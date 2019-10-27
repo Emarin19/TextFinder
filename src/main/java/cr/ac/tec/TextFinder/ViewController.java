@@ -86,12 +86,24 @@ public class ViewController {
             fileList.getChildren().add(doc);
         }
     }
+
+    /**
+     * Sort the file list by creation date
+     */
     public void sortByDate(){
         FileListManager.getInstance().sortResults(SortBy.DATE);
     }
+
+    /**
+     * Sort the file list by date size
+     */
     public void sortBySize(){
         FileListManager.getInstance().sortResults(SortBy.SIZE);
     }
+
+    /**
+     * Sort the file list by name
+     */
     public void sortByName(){
         FileListManager.getInstance().sortResults(SortBy.NAME);
     }

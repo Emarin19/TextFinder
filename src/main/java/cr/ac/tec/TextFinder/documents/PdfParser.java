@@ -27,6 +27,7 @@ import java.util.StringTokenizer;
  * @since October 2019
  */
 public class PdfParser implements TextFileParser{
+    private static String delimiters = ".,;:(){}[]/´ ";
     private static PdfParser instance;
 
     private PdfParser() {
@@ -36,7 +37,12 @@ public class PdfParser implements TextFileParser{
             instance = new PdfParser();
         return instance;
     }
-    @Override
+
+    /**
+     * Parse the file and create a word tree from it
+     * @param file
+     * @return the document with its respective word tree
+     */
     public Document parseDocument(File file) {
         Document parsedDoc = new Document(file);
         parsedDoc.setType(DocumentType.PDF);
@@ -45,20 +51,17 @@ public class PdfParser implements TextFileParser{
     }
 
     private void generateTree(Document fileToParse) {
+        Pair<String, TecList> value;
+        BinaryTree tree = new BinaryTree();
         try (PDDocument document = PDDocument.load(fileToParse.getFile())){
-            Pair<String, TecList> value;
-            BinaryTree tree = new BinaryTree();
             if (!document.isEncrypted()) {
-                PDFTextStripperByArea pdfDocument = new PDFTextStripperByArea();
-                pdfDocument.setSortByPosition(true);
-                PDFTextStripper pdfFile = new PDFTextStripper();
-                String pdfText = pdfFile.getText(document);
-
+                PDFTextStripperByArea pdfTextStripperByArea = new PDFTextStripperByArea();
+                pdfTextStripperByArea.setSortByPosition(true);
+                PDFTextStripper pdfTextStripper = new PDFTextStripper();
+                String pdfText = pdfTextStripper.getText(document);
                 String lines[] = pdfText.split("\\r?\\n");
-                String delimiters = ".,;:(){}[]/´ ";
                 int numLine = 1;
                 int position = 0;
-
                 for (String line : lines) {
                     StringTokenizer stk = new StringTokenizer(line, delimiters);
                     while(stk.hasMoreTokens()){
@@ -74,106 +77,153 @@ public class PdfParser implements TextFileParser{
                     position = 0;
                     numLine++;
                 }
+                document.close();
                 fileToParse.setTree(tree);
             }
-        } catch (FileNotFoundException e) {
-            System.out.println("File not found");
-        } catch (IOException e){
-            System.out.println("Read error");
+        } catch(IOException e){
+            e.printStackTrace();
         }
     }
 
+    /**
+     * look for the context surrounding a word or phrase in the file
+     * @param doc
+     * @param word_phrase
+     */
     public static void getContext(Document doc, String word_phrase) {
-        String[] sentence = word_phrase.split(" ");
+        StringTokenizer stk = new StringTokenizer(word_phrase, delimiters);
+        String[] sentence = new String[stk.countTokens()];
+        int pos = 0;
+        while (stk.hasMoreTokens()){
+            String word = Normalizer
+                    .normalize(stk.nextToken(), Normalizer.Form.NFD)
+                    .replaceAll("[^\\p{ASCII}]", "");
+            sentence[pos] = word;
+            pos++;
+        }
         if(sentence.length == 1)
             word(doc, word_phrase);
         else
-            phrase(doc, word_phrase);
+            phrase(doc, sentence);
     }
 
     private static void word(Document doc, String word) {
         BinaryTree tree = doc.getTree();
         File file = doc.getFile();
-        TecList list = null;
+        TecList list;
         try {
             list = tree.searchNode(word).getValue();
-        }catch(Exception e){
-            return;
-        }
-        String context = "";
+        }catch(Exception e){ return; }
+
+        int prevLine = -3;
+        int numLines = 1;
         Pair value;
         int line;
         try (PDDocument document = PDDocument.load(file)){
             if (!document.isEncrypted()) {
-                PDFTextStripperByArea pdfDocument = new PDFTextStripperByArea();
-                pdfDocument.setSortByPosition(true);
-                PDFTextStripper pdfFile = new PDFTextStripper();
-                String pdfText = pdfFile.getText(document);
+                PDFTextStripperByArea pdfTextStripperByArea = new PDFTextStripperByArea();
+                pdfTextStripperByArea.setSortByPosition(true);
+                PDFTextStripper pdfTextStripper = new PDFTextStripper();
+                String pdfText = pdfTextStripper.getText(document);
                 String lines[] = pdfText.split("\\r?\\n");
-                int numLines = 1;
                 for (int i=0; i<list.size(); i++){
                     value = (Pair) list.get(i);
                     line = (int) value.getKey();
-                    while(numLines!=line){
-                        numLines++;
+                    String context = "";
+                    String pre = "";
+                    String pos = "";
+                    if (prevLine-2==line || prevLine-1==line || prevLine==line || prevLine+1==line || prevLine+2==line)
+                        continue;
+                    else{
+                        while(numLines!=line){
+                            numLines++;
+                        }
+                        if (numLines>=3)
+                            pre += lines[numLines-3] + "\n" + lines[numLines-2];
+                        if (numLines+1<lines.length)
+                            pos += lines[numLines] + "\n" + lines[numLines+1];
+                        context += pre + "\n" + lines[numLines-1] + "\n" + pos;
+                        System.out.println(context);
+                        System.out.println();
+                        //SearchResult temp = new SearchResult(doc, context, value, word);
+                        //FileListManager.getInstance().addSearchResult(temp);
                     }
-                    context = lines[numLines-1];
-
-                    SearchResult temp = new SearchResult(doc, context, value, word);
-                    FileListManager.getInstance().addSearchResult(temp);
+                    prevLine = line;
                 }
+                document.close();
             }
         }catch (IOException ex){ return; }
     }
-    private static void phrase(Document doc, String phrase) {
-        String[] sentence = phrase.split(" ");
-        File file = doc.getFile();
+    private static void phrase(Document doc, String[] sentence) {
         BinaryTree tree = doc.getTree();
-        TecList list = tree.searchNode(sentence[0]).getValue();
+        File file = doc.getFile();
+        TecList list;
+        try {
+            list = tree.searchNode(sentence[0]).getValue();
+        }catch(Exception e){ return; }
+
+        int prevLine = -3;
+        int numLines = 1;
+        Pair value;
+        int line;
         try (PDDocument document = PDDocument.load(file)){
             if (!document.isEncrypted()) {
-                PDFTextStripperByArea pdfDocument = new PDFTextStripperByArea();
-                pdfDocument.setSortByPosition(true);
-                PDFTextStripper pdfFile = new PDFTextStripper();
-                String pdfText = pdfFile.getText(document);
+                PDFTextStripperByArea pdfTextStripperByArea = new PDFTextStripperByArea();
+                pdfTextStripperByArea.setSortByPosition(true);
+                PDFTextStripper pdfTextStripper = new PDFTextStripper();
+                String pdfText = pdfTextStripper.getText(document);
                 String lines[] = pdfText.split("\\r?\\n");
-                String context = "";
-                int numLines = 1;
-                Pair value;
-                int line;
                 for (int i=0; i<list.size(); i++){
                     value = (Pair) list.get(i);
                     line = (int) value.getKey();
-                    boolean exist = false;
-                    while(numLines!=line){
-                        numLines++;
+                    String context = "";
+                    String pre = "";
+                    String pos = "";
+                    if (prevLine-2==line || prevLine-1==line || prevLine==line || prevLine+1==line || prevLine+2==line)
+                        continue;
+                    else {
+                        boolean exist;
+                        while(numLines!=line){
+                            numLines++;
+                        }
+                        exist = verify(lines[numLines-1], sentence, 1);
+                        if(exist){
+                            if (numLines>=3)
+                                pre += lines[numLines-3] + "\n" + lines[numLines-2];
+                            if (numLines+1<lines.length)
+                                pos += lines[numLines] + "\n" + lines[numLines+1];
+                            context += pre + "\n" + lines[numLines-1] + "\n" + pos;
+                            System.out.println(context);
+                            System.out.println();
+                            //SearchResult temp = new SearchResult(doc, context, value, word);
+                            //FileListManager.getInstance().addSearchResult(temp);
+                        }
                     }
-                    exist = verify(lines[numLines-1], sentence, 1);
-                    if(exist){
-                        context = lines[numLines-1];
-                        //SearchResult(doc, context, value)
-                        System.out.println(lines[numLines-1]);
-                        System.out.println();
-                    }
+                    prevLine = line;
                 }
+                document.close();
             }
         }catch (IOException ex){ return; }
-
     }
 
     private static boolean verify(String line, String[] sentence, int pos) {
         boolean result = false;
-        String delimiters = ".,;:(){}[]/´ ";
         StringTokenizer stk = new StringTokenizer(line, delimiters);
         while (stk.hasMoreTokens()){
-            if (stk.nextToken().equalsIgnoreCase(sentence[0])){
+            String word = Normalizer
+                    .normalize(stk.nextToken(), Normalizer.Form.NFD)
+                    .replaceAll("[^\\p{ASCII}]", "");
+            if (word.equalsIgnoreCase(sentence[0])){
                 break;
             }
         }
 
         while (stk.hasMoreTokens()){
             if (pos<sentence.length){
-                if(stk.nextToken().equalsIgnoreCase(sentence[pos])){
+                String word = Normalizer
+                        .normalize(stk.nextToken(), Normalizer.Form.NFD)
+                        .replaceAll("[^\\p{ASCII}]", "");
+                if(word.equalsIgnoreCase(sentence[pos])){
                     result = true;
                     pos++;
                 }

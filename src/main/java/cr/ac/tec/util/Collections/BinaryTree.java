@@ -3,6 +3,8 @@ package cr.ac.tec.util.Collections;
 import cr.ac.tec.util.Collections.List.TecList;
 import javafx.util.Pair;
 
+import java.text.Normalizer;
+
 public class BinaryTree {
     private TreeNode root;
     public boolean isEmpty(){
@@ -42,6 +44,9 @@ public class BinaryTree {
     }
     public boolean contains(String word){
         boolean result = false;
+        word = Normalizer
+                .normalize(word, Normalizer.Form.NFD)
+                .replaceAll("[^\\p{ASCII}]", "");
         if(!isEmpty()){
             TreeNode current = root;
             while(current!=null) {
@@ -64,6 +69,9 @@ public class BinaryTree {
         return result;
     }
     public Pair<String, TecList> searchNode(String word){
+        word = Normalizer
+                .normalize(word, Normalizer.Form.NFD)
+                .replaceAll("[^\\p{ASCII}]", "");
         Pair<String, TecList>  result =null;
         if(contains(word)){
             TreeNode current = root;
