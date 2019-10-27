@@ -167,8 +167,8 @@ public class DocParser implements TextFileParser {
                     if(exist){
                         context = paragraphList.get(numLines-1).getText();
                         System.out.println(context);
-                        //SearchResult(doc, context, value)
-
+                        //SearchResult temp = new SearchResult(doc, context, value, word);
+                        //FileListManager.getInstance().addSearchResult(temp);
                     }
                 }
                 prevLine = line;

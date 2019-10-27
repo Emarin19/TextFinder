@@ -162,6 +162,8 @@ public class TxtParser implements TextFileParser{
                         if (exist){
                             context=sline;
                             System.out.println(context);
+                            //SearchResult temp = new SearchResult(doc, context, value, word);
+                            //FileListManager.getInstance().addSearchResult(temp);
                             //SearchResult(doc, context, value)
                         }
                         numLines++;
