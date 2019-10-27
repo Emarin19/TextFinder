@@ -7,9 +7,19 @@ import java.text.Normalizer;
 
 public class BinaryTree {
     private TreeNode root;
+
+    /**
+     * Checks if the Tree is empty
+     * @return tree empty or not
+     */
     public boolean isEmpty(){
         return root==null;
     }
+
+    /**
+     * inserts a new node in the Binary Tree
+     * @param value Pair value to be inserted on the tree
+     */
     public void insert(Pair<String, TecList> value){
         if(isEmpty()){
             root = new TreeNode(value);

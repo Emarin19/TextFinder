@@ -15,14 +15,14 @@
       <Label fx:id="fileDate" layoutX="699.0" layoutY="14.0" text="Date" />
       <Label fx:id="refA" layoutX="21.0" layoutY="174.0" text="Referencia1" />
       <Label fx:id="refB" layoutX="827.0" layoutY="172.0" text="Referencia2" />
-      <ScrollPane layoutX="33.0" layoutY="38.0">
+      <ScrollPane hbarPolicy="NEVER" layoutX="20.0" layoutY="41.0" prefHeight="116.0" prefWidth="880.0">
          <content>
-            <TextFlow fx:id="context" prefHeight="118.0" prefWidth="852.0">
+            <TextFlow fx:id="context" prefHeight="115.0" prefWidth="875.0">
                <opaqueInsets>
                   <Insets />
                </opaqueInsets>
                <padding>
-                  <Insets left="50.0" right="50.0" />
+                  <Insets left="20.0" right="20.0" />
                </padding>
             </TextFlow>
          </content>

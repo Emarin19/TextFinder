@@ -96,7 +96,7 @@ public class TxtParser implements TextFileParser{
         if(sentence.length == 1)
             word(doc, word_phrase);
         else
-            phrase(doc, sentence);
+            phrase(doc, sentence, word_phrase);
     }
 
     private static void word(Document doc, String word) {
@@ -121,9 +121,15 @@ public class TxtParser implements TextFileParser{
                 while ((sline = reader.readLine()) != null) {
                     if(numLines == line){
                         context=sline;
-                        System.out.println(context);
-                        //SearchResult temp = new SearchResult(doc, context, value, word);
-                        //FileListManager.getInstance().addSearchResult(temp);
+                        int cnt= 0;
+                        String next = reader.readLine();
+                        while(context.split("").length<500 && (next!="" || next!=null)){
+                            context+= "\n"+next;
+                            cnt++;
+                            next = reader.readLine();
+                        }
+                        SearchResult temp = new SearchResult(doc, context, value, word);
+                        FileListManager.getInstance().addSearchResult(temp);
                         numLines++;
                         break;
                     }
@@ -135,7 +141,7 @@ public class TxtParser implements TextFileParser{
         } catch (IOException e){ e.printStackTrace(); }
     }
 
-    private static void phrase(Document doc, String[] sentence) {
+    private static void phrase(Document doc, String[] sentence, String word_phrase) {
         BinaryTree tree = doc.getTree();
         File file = doc.getFile();
         TecList list;
@@ -161,10 +167,8 @@ public class TxtParser implements TextFileParser{
                         System.out.println(exist);
                         if (exist){
                             context=sline;
-                            System.out.println(context);
-                            //SearchResult temp = new SearchResult(doc, context, value, word);
-                            //FileListManager.getInstance().addSearchResult(temp);
-                            //SearchResult(doc, context, value)
+                            SearchResult temp = new SearchResult(doc, context, value, word_phrase);
+                            FileListManager.getInstance().addSearchResult(temp);
                         }
                         numLines++;
                         break;

@@ -101,7 +101,7 @@ public class DocParser implements TextFileParser {
         if(sentence.length == 1)
             word(doc, word_phrase);
         else
-            phrase(doc, sentence);
+            phrase(doc, sentence, word_phrase);
     }
 
     private static void word(Document doc, String word) {
@@ -129,7 +129,12 @@ public class DocParser implements TextFileParser {
                         numLines++;
                     }
                     context = paragraphList.get(numLines-1).getText();
-                    System.out.println(context);
+                    int cnt= 0;
+                    while(context.split("").length<500 && paragraphList.size()>(numLines+cnt)){
+                        if(paragraphList.get(numLines+cnt).getText() != "")
+                            context+= "\n"+paragraphList.get(numLines+cnt).getText();
+                        cnt++;
+                    }
                     SearchResult temp = new SearchResult(doc, context, value, word);
                     FileListManager.getInstance().addSearchResult(temp);
                 }
@@ -138,7 +143,7 @@ public class DocParser implements TextFileParser {
         } catch (Exception e){ e.printStackTrace(); }
     }
 
-    private static void phrase(Document doc, String[] sentence) {
+    private static void phrase(Document doc, String[] sentence, String word_phrase) {
         BinaryTree tree = doc.getTree();
         File file = doc.getFile();
         TecList list;
@@ -166,9 +171,8 @@ public class DocParser implements TextFileParser {
                     exist = verify(paragraphList.get(numLines-1).getText(), sentence, 1);
                     if(exist){
                         context = paragraphList.get(numLines-1).getText();
-                        System.out.println(context);
-                        //SearchResult temp = new SearchResult(doc, context, value, word);
-                        //FileListManager.getInstance().addSearchResult(temp);
+                        SearchResult temp = new SearchResult(doc, context, value, word_phrase);
+                        FileListManager.getInstance().addSearchResult(temp);
                     }
                 }
                 prevLine = line;

@@ -104,7 +104,7 @@ public class PdfParser implements TextFileParser{
         if(sentence.length == 1)
             word(doc, word_phrase);
         else
-            phrase(doc, sentence);
+            phrase(doc, sentence, word_phrase);
     }
 
     private static void word(Document doc, String word) {
@@ -143,10 +143,9 @@ public class PdfParser implements TextFileParser{
                         if (numLines+1<lines.length)
                             pos += lines[numLines] + "\n" + lines[numLines+1];
                         context += pre + "\n" + lines[numLines-1] + "\n" + pos;
-                        System.out.println(context);
-                        System.out.println();
-                        //SearchResult temp = new SearchResult(doc, context, value, word);
-                        //FileListManager.getInstance().addSearchResult(temp);
+
+                        SearchResult temp = new SearchResult(doc, context, value, word);
+                        FileListManager.getInstance().addSearchResult(temp);
                     }
                     prevLine = line;
                 }
@@ -154,7 +153,7 @@ public class PdfParser implements TextFileParser{
             }
         }catch (IOException ex){ return; }
     }
-    private static void phrase(Document doc, String[] sentence) {
+    private static void phrase(Document doc, String[] sentence, String word_phrase) {
         BinaryTree tree = doc.getTree();
         File file = doc.getFile();
         TecList list;
@@ -193,10 +192,8 @@ public class PdfParser implements TextFileParser{
                             if (numLines+1<lines.length)
                                 pos += lines[numLines] + "\n" + lines[numLines+1];
                             context += pre + "\n" + lines[numLines-1] + "\n" + pos;
-                            System.out.println(context);
-                            System.out.println();
-                            //SearchResult temp = new SearchResult(doc, context, value, word);
-                            //FileListManager.getInstance().addSearchResult(temp);
+                            SearchResult temp = new SearchResult(doc, context, value, word_phrase);
+                            FileListManager.getInstance().addSearchResult(temp);
                         }
                     }
                     prevLine = line;

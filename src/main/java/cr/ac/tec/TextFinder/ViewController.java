@@ -23,7 +23,6 @@ public class ViewController {
     public VBox fileList;
     public ScrollPane fileListScrollPane;
     public Button searchButton;
-    public CheckBox phraseCheckBox;
     public TextField searchTextField;
     public GridPane searchPane;
     public MenuBar menu;
@@ -42,15 +41,9 @@ public class ViewController {
             resultContainer.getChildren().remove(result);
         }
         FileListManager.getInstance().setSrchResults(new TecList<>());
-        //phrase selected
-        boolean isPhrase = phraseCheckBox.isSelected();
-        if (isPhrase){
-
-        }else{
-            TecList<Document> documents = FileListManager.getInstance().getDocList();
-            for (Document doc: documents) {
-                doc.getContext(searchTextField.getText());
-            }
+        TecList<Document> documents = FileListManager.getInstance().getDocList();
+        for (Document doc: documents) {
+            doc.getContext(searchTextField.getText());
         }
     }
     public void addByFolder(){

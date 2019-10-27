@@ -9,7 +9,9 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.util.Pair;
 
+import java.awt.*;
 import java.io.IOException;
+import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 
 public class SearchResult extends AnchorPane {
@@ -24,7 +26,8 @@ public class SearchResult extends AnchorPane {
     private Document doc;
     public SearchResult(Document document, String contextPhrase, Pair<Integer, Integer> reference, String searched){
         this.doc = document;
-        this.searched = searched;
+        this.searched= Normalizer.normalize(searched, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
+
         FXMLLoader fxmlLoader = new FXMLLoader(
                 getClass().getResource("SearchResult.fxml")
         );
@@ -38,7 +41,9 @@ public class SearchResult extends AnchorPane {
         setTexts(reference, contextPhrase);
     }
     public void initialize(){
-
+        abrirDoc.setOnAction(event->{
+            openFile();
+        });
     }
     public void setTexts(Pair<Integer, Integer> reference, String contextPhrase){
         SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
@@ -63,23 +68,27 @@ public class SearchResult extends AnchorPane {
         String[] paragraph = phrase.split(" ");
         String prevMessage = "";
 
-
-        for (int i=0; i<paragraph.length-1; i++) {
+        for (int i=0; i<paragraph.length; i++) {
             String posibleText = paragraph[i];
             boolean success = true;
-            if (paragraph[i].compareToIgnoreCase(origin[0])==0){
-                for (int j= 1 ;j<origin.length-1;j++){
-                    if(paragraph[++i].compareToIgnoreCase(origin[j])==0){
+            String cmpWord = Normalizer.normalize(paragraph[i], Normalizer.Form.NFD)
+                    .replaceAll("[^\\p{ASCII}]", "");
+            if (cmpWord.compareToIgnoreCase(origin[0])==0){
+                for (int j= 1 ;j<origin.length;j++){
+                    cmpWord = Normalizer.normalize(paragraph[++i], Normalizer.Form.NFD)
+                            .replaceAll("[^\\p{ASCII}]", "");
+                    if(cmpWord.compareToIgnoreCase(origin[j])==0){
                         posibleText += " "+ paragraph[i];
                     }else{
                         success = false;
                     }
                 }
                 if (success){
-                    Text prev = new Text(prevMessage);
-                    Text found = new Text(" " + searched);
-                    found.setFill(Color.RED);
+                    Text prev = new Text(prevMessage+ " ");
+                    Text found = new Text(posibleText);
+                    found.getStyleClass().add("highlight");
                     context.getChildren().addAll(prev, found);
+                    prevMessage = "";
                 }else{
                     prevMessage += " " + posibleText;
                 }
@@ -90,8 +99,14 @@ public class SearchResult extends AnchorPane {
         Text finalText = new Text(prevMessage);
         context.getChildren().add(finalText);
     }
-
     public Document getDoc() {
         return doc;
+    }
+    public void openFile(){
+        try{
+            Desktop.getDesktop().open(doc.getFile());
+        }catch (IOException ex){
+            System.out.println("File not found");
+        }
     }
 }
