@@ -5,6 +5,7 @@ import cr.ac.tec.util.Collections.List.TecList;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -32,8 +33,10 @@ public class ViewController {
     public void configureControl(Stage stage){
         this.currentStage = stage;
         FileListManager.getInstance().viewController = this;
-    }
-    public void test(){
+        rootPane.setOnKeyPressed(event->{
+            if(event.getCode().equals(KeyCode.ENTER))
+                onSearchButtonClicked();
+        });
     }
     public void onSearchButtonClicked(){
         TecList<SearchResult> tempList = FileListManager.getInstance().getSrchResults();
@@ -79,14 +82,12 @@ public class ViewController {
             fileList.getChildren().add(doc);
         }
     }
-
     /**
      * Sort the file list by creation date
      */
     public void sortByDate(){
         FileListManager.getInstance().sortResults(SortBy.DATE);
     }
-
     /**
      * Sort the file list by date size
      */
